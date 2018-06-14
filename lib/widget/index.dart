@@ -1,41 +1,38 @@
 import "package:flutter/material.dart";
 import "package:flutter_redux/flutter_redux.dart";
-import "../store.dart";
+import "package:redux/redux.dart";
+import "../store/model/root_state.dart";
+import "../store/action/action.dart";
 
-class Index extends StatefulWidget{
+class Index extends StatefulWidget {
   @override
-    State<StatefulWidget> createState() {
-      return new IndexState();
-    }
+  State<StatefulWidget> createState() {
+    return new IndexState();
+  }
 }
 
-class IndexState extends State<Index>{
+class IndexState extends State<Index> {
   @override
-    Widget build(BuildContext context) {
-      return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Index')
-        ),
-        body: new Center(
-          child: new StoreConnector<int, String>(
-            converter: (store) => store.state.toString(),
-            builder: (BuildContext context, String count) {
-              return new Text(count + ' times');
-            },
-          ),
-        ),
-        floatingActionButton: new StoreConnector<int, VoidCallback>(
-          converter: (store) {
-            return () => store.dispatch(Actions.Increment);
-          },
-          builder: (context, cb) {
-            return new FloatingActionButton(
-              onPressed: cb,
-              tooltip: 'Increment',
-              child: new Icon(Icons.add)
-            );
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(title: new Text('Index')),
+      body: new Center(
+        child: new StoreConnector<RootState, bool>(
+          converter: (Store<RootState> store) => store.state.isLoading,
+          builder: (BuildContext context, bool isLoading) {
+            return new Text(isLoading ? 'loading' : 'loaded');
           },
         ),
-      );
-    }
+      ),
+      floatingActionButton: new StoreConnector<RootState, VoidCallback>(
+        converter: (Store<RootState> store) {
+          return () => store.dispatch(ToggleLoading(!store.state.isLoading));
+        },
+        builder: (context, cb) {
+          return new FloatingActionButton(
+              onPressed: cb, tooltip: 'Increment', child: new Icon(Icons.add));
+        },
+      ),
+    );
+  }
 }
