@@ -31,12 +31,13 @@ Stream<dynamic> fetchTopicEpic(Stream<dynamic> actions, EpicStore<RootState> sto
   return new Observable(actions)
     .ofType(new TypeToken<RequestTopic>())
     .asyncMap((action) {
-      return http.get("${apis['topic']}/${action.id}")
+      return http.get("${apis['topic']}/${action.id}?mdrender=false")
         .then((ret) {
           Map<String, dynamic> result = json.decode(ret.body);
           Topic topic = new Topic.fromJson(result['data']);
           return new ResponseTopic(topic);
         }).catchError((err) {
+          print(err);
           return new ResponseTopicFailed(err);
         });
     });

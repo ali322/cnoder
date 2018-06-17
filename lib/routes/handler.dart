@@ -10,12 +10,12 @@ var handlers = {
   '/': new Handler(
       handlerFunc: (BuildContext context, Map<String, dynamic> params) {
     Application.store.dispatch(new RequestTopics());
-    return new Topics();
+    return new TopicsScene();
   }),
   '/topic/:id': new Handler(
     handlerFunc: (BuildContext context, Map<String, dynamic> params) {
       Application.store.dispatch(new RequestTopic(params['id'][0]));
-      return new TopicDetail();
+      return new TopicScene();
     }
   ),
 };
