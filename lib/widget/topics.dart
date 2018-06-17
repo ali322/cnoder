@@ -1,3 +1,4 @@
+import "dart:core";
 import "package:flutter/material.dart";
 import "package:flutter_redux/flutter_redux.dart";
 import "package:redux/redux.dart";
@@ -29,10 +30,30 @@ class Topics extends StatelessWidget{
       );
     }
 
-    Widget _renderRow(BuildContext context, Topic row) {
-      return new ListTile(
-        title: new Text(row.title),
-        onTap: () => Application.router.navigateTo(context, '/topic/?id=${row.id}', transition: TransitionType.inFromLeft),
+    Widget _renderRow(BuildContext context, Topic topic) {
+      ListTile title = new ListTile(
+        leading: new Image.network(topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar),
+        title: new Text(topic.authorName),
+        subtitle: new Row(
+          children: <Widget>[
+            new Text(DateTime.parse(topic.lastReplyAt).toString().split('.')[0]),
+            new Text('share')
+          ],
+        ),
+        trailing: new Text('${topic.replyCount}/${topic.visitCount}'),
+      );
+      return new InkWell(
+        onTap: () => Application.router.navigateTo(context, '/topic/?id=${topic.id}', transition: TransitionType.inFromLeft),
+        child: new Column(
+          children: <Widget>[
+            title,
+            new Container(
+              padding: const EdgeInsets.all(10.0),
+              alignment: Alignment.centerLeft,
+              child: new Text(topic.title),
+            )
+          ],
+        ),
       );
     }
 }
