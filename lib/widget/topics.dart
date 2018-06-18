@@ -68,7 +68,7 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         ),
         bottomNavigationBar: new CupertinoTabBar(
           onTap: (int i) {
-            
+            print(i);
           },
           items: [
             new BottomNavigationBarItem(
