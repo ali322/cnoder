@@ -25,7 +25,7 @@ class AppState extends State<App> {
     final app = new MaterialApp(
       title: 'CNoder',
       debugShowCheckedModeBanner: false,
-      theme: new ThemeData(primaryColor: const Color(0xFF63CA6C)),
+      theme: new ThemeData(primaryColor: const Color(0xFFACC001)),
       onGenerateRoute: Application.router.generator,
     );
     print('initial route: ${app.initialRoute}');

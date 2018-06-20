@@ -2,18 +2,30 @@ import "package:redux/redux.dart";
 import "../action/action.dart";
 import "../model/topic.dart";
 
-// final Reducer<List<Topic>> topicsReducer = combineReducers<List<Topic>>(
-//   [
-final Reducer<List<Topic>> topicsReducer =  new TypedReducer<List<Topic>, ResponseTopics>(_responseTopics);
-// ]);
+final Reducer<Map> topicsReducer =  new TypedReducer<Map, ResponseTopics>(_responseTopics);
 
-List<Topic> _responseTopics(List<Topic> state, ResponseTopics action) {
-  return action.topics;
+Map _responseTopics(Map state, ResponseTopics action) {
+  Map topicsOfCategory = {};
+  state.forEach((k, v) {
+    Map _v = {};
+    _v.addAll(v);
+    if (k == action.category) {
+      _v["currentPage"] = action.currentPage;
+      List _list = [];
+      if (_v['currentPage'] < action.currentPage) {
+        _list.addAll(_v["list"]);
+        _list.addAll(action.topics);
+      } else {
+        _list.addAll(action.topics);
+      }
+      _v["list"] = _list;
+    }
+    topicsOfCategory[k] = _v;
+  });
+  return topicsOfCategory;
 }
 
-// final Reducer<Topic> topicReducer = combineReducers<Topic>([
 final Reducer<Topic> topicReducer = new TypedReducer<Topic, ResponseTopic>(_responseTopic);
-// ]);
 
 Topic _responseTopic(Topic state, ResponseTopic action) {
   return action.topic;

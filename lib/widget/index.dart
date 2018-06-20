@@ -1,38 +1,49 @@
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "package:flutter_redux/flutter_redux.dart";
-import "package:redux/redux.dart";
-import "../store/model/root_state.dart";
-import "../store/action/action.dart";
+import "./topics.dart";
+import "./collect.dart";
+import "./message.dart";
+import "./me.dart";
 
-class Index extends StatefulWidget {
+class IndexScene extends StatelessWidget {
   @override
-  State<StatefulWidget> createState() {
-    return new IndexState();
-  }
-}
-
-class IndexState extends State<Index> {
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(title: new Text('Index')),
-      body: new Center(
-        child: new StoreConnector<RootState, bool>(
-          converter: (Store<RootState> store) => store.state.isLoading,
-          builder: (BuildContext context, bool isLoading) {
-            return new Text(isLoading ? 'loading' : 'loaded');
-          },
+    Widget build(BuildContext context) {
+      List<Widget> pages = [
+        new TopicsScene(),
+        new CollectScene(),
+        new MessageScene(),
+        new MeScene()
+      ];
+      // TODO: implement build
+      return new CupertinoTabScaffold(
+        tabBar: new CupertinoTabBar(
+          backgroundColor: const Color(0xFFF7F7F7),
+          items: <BottomNavigationBarItem>[
+            new BottomNavigationBarItem(
+              icon: new Icon(Icons.home),
+              title: new Text('主题'),
+            ),
+            new BottomNavigationBarItem(
+              icon: new Icon(Icons.favorite),
+              title: new Text('收藏')
+            ),
+            new BottomNavigationBarItem(
+              icon: new Icon(Icons.message),
+              title: new Text('消息')
+            ),
+            new BottomNavigationBarItem(
+              icon: new Icon(Icons.verified_user),
+              title: new Text('我的')
+            )
+          ],
         ),
-      ),
-      floatingActionButton: new StoreConnector<RootState, VoidCallback>(
-        converter: (Store<RootState> store) {
-          return () => store.dispatch(ToggleLoading(!store.state.isLoading));
+        tabBuilder: (BuildContext context, int i) {
+          return new CupertinoTabView(
+            builder: (BuildContext context) {
+              return pages[i];
+            }
+          );
         },
-        builder: (context, cb) {
-          return new FloatingActionButton(
-              onPressed: cb, tooltip: 'Increment', child: new Icon(Icons.add));
-        },
-      ),
-    );
-  }
+      );
+    }
 }

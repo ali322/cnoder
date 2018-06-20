@@ -1,4 +1,5 @@
 import "../model/topic.dart";
+import "package:flutter/foundation.dart";
 
 class ToggleLoading {
   final bool isLoading;
@@ -6,14 +7,22 @@ class ToggleLoading {
   ToggleLoading(this.isLoading);
 }
 
-class RequestTopics {}
+class RequestTopics {
+  final int currentPage;
+  final String category;
+  final Function afterFetched;
+
+  RequestTopics({this.currentPage = 1, this.category = "", @required this.afterFetched});
+}
 
 class ResponseTopics {
   final List<Topic> topics;
+  final int currentPage;
+  final String category;
 
-  ResponseTopics(this.topics);
+  ResponseTopics(this.currentPage, this.category, this.topics);
 
-  ResponseTopics.empty() : this([]);
+  ResponseTopics.empty() : this(1, "", []);
 }
 
 class ResponseTopicsFailed {

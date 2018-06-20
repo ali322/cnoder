@@ -12,6 +12,7 @@ class TopicScene extends StatelessWidget {
     Widget build(BuildContext context) {
       return new Scaffold(
         appBar: new AppBar(
+          elevation: 0.0,
           title: new Text("详情"),
           leading: new BackButton(),
         ),

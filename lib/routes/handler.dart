@@ -3,14 +3,14 @@ import "package:fluro/fluro.dart";
 import "package:flutter/material.dart";
 import "../store/action/action.dart";
 import "../config/application.dart";
-import "../widget/topics.dart";
+import "../widget/index.dart";
 import "../widget/topic.dart";
+import "../widget/publish.dart";
 
 var handlers = {
   '/': new Handler(
       handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-    Application.store.dispatch(new RequestTopics());
-    return new TopicsScene();
+    return new IndexScene();
   }),
   '/topic/:id': new Handler(
     handlerFunc: (BuildContext context, Map<String, dynamic> params) {
@@ -18,6 +18,9 @@ var handlers = {
       return new TopicScene();
     }
   ),
+  '/publish': new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+    return new PublishScene();
+  })
 };
 
 var notFoundHandler = new Handler(

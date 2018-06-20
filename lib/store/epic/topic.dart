@@ -12,18 +12,22 @@ Stream<dynamic> fetchTopicsEpic(
     Stream<dynamic> actions, EpicStore<RootState> store) {
   return new Observable(actions)
       .ofType(new TypeToken<RequestTopics>())
-      .asyncMap((RequestTopics action) {
-    return http.get(apis['topics']).then((ret) {
-      Map<String, dynamic> result = json.decode(ret.body);
-      List<Topic> topics = [];
-      result['data'].forEach((v) {
-        topics.add(new Topic.fromJson(v));
-      });
-      return new ResponseTopics(topics);
-    }).catchError((err){
-      print(err);
-      return new ResponseTopicsFailed(err);
-    });
+      .flatMap((action) {
+        return new Observable(() async* {
+          try {
+            final ret = await http.get("${apis['topics']}?page=${action.currentPage}&limit=6&tab=${action.category}&mdrender=false");
+            Map<String, dynamic> result = json.decode(ret.body);
+            List<Topic> topics = [];
+            result['data'].forEach((v) {
+              topics.add(new Topic.fromJson(v));
+            });
+            action.afterFetched();
+            yield new ResponseTopics(action.currentPage, action.category, topics);
+          } catch(err) {
+            print(err);
+            yield new ResponseTopicsFailed(err);
+          }
+        } ());
   });
 }
 

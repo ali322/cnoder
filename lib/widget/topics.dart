@@ -4,8 +4,12 @@ import "package:flutter/cupertino.dart";
 import "package:flutter_redux/flutter_redux.dart";
 import "package:redux/redux.dart";
 import 'package:fluro/fluro.dart';
+import "package:pull_to_refresh/pull_to_refresh.dart";
 import "../store/model/root_state.dart";
 import "../store/model/topic.dart";
+import "../store/action/action.dart";
+import "../store/view_model/topics.dart";
+import "./pull_and_refresh.dart";
 import "../config/application.dart";
 
 class TopicsScene extends StatefulWidget{
@@ -16,79 +20,91 @@ class TopicsScene extends StatefulWidget{
     }
 }
 
+void _noop() {}
+
 class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
-  TabController _controller;
-  List<Tab> _tabs;
-  VoidCallback _onTabChange;
+  String _category = "";
+  RefreshController _controller;
 
   @override
     void initState() {
-      // TODO: implement initState
       super.initState();
-      _tabs = [
-        new Tab(text: '全部'),
-        new Tab(text: '问答'),
-        new Tab(text: '分享')
-      ];
-      _controller = new TabController(length:_tabs.length,vsync: this);
-      _onTabChange = () {
-
-      };
-      _controller.addListener(_onTabChange);
+      Application.store.dispatch(new RequestTopics(afterFetched: _noop));
+      _controller = new RefreshController();
     }
     @override
       void dispose() {
-        // TODO: implement dispose
         super.dispose();
-        _controller.removeListener(_onTabChange);
-        _controller.dispose();
       }
   @override
     Widget build(BuildContext context) {
-      return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('列表'),
-          bottom: new TabBar(
-            tabs: _tabs,
-            controller: _controller,
-          ),
-        ),
-        body: new StoreConnector<RootState, List<Topic>>(
-          converter: (Store<RootState> store) {
-//            return new List<Topic>();
-            return store.state.topics;
-            // return store.state.topics;
-          },
-          builder: (BuildContext context, List<Topic> rows) {
-            return new ListView.builder(
-              itemCount: rows.length,
-              itemBuilder: (BuildContext context, int i) => _renderRow(context, rows[i]),
-            );
-          },
-        ),
-        bottomNavigationBar: new CupertinoTabBar(
-          onTap: (int i) {
-            print(i);
-          },
-          items: [
-            new BottomNavigationBarItem(
-              icon: new Icon(Icons.home),
-              title: new Text('主题'),
+      return new StoreConnector<RootState, TopicsViewModel>(
+        converter: (Store<RootState> store) => TopicsViewModel.fromStore(store),
+        builder: (BuildContext context, TopicsViewModel vm) {
+          // if (vm.isLoading == false && vm.topicsOfCategory[_category]["list"].length > 0) {
+          //   print('sendBack');
+          //   _controller.sendBack(false, RefreshStatus.completed);
+          // }
+          List<DropdownMenuItem> _menuItems = [];
+          vm.topicsOfCategory.forEach((k, v) {
+            _menuItems.add(new DropdownMenuItem(
+              value: k,
+              child: new Text(v["label"]),
+            ));
+          });
+          void _onRefresh(bool up) {
+            if (!up) {
+              // Application.store.dispatch(new ToggleLoading(true));
+              print('refresh');
+              Application.store.dispatch(new RequestTopics(
+                currentPage: vm.topicsOfCategory[_category]["currentPage"] + 1,
+                category: _category,
+                afterFetched: () {
+                  _controller.sendBack(false, RefreshStatus.idle);
+                }
+              ));
+            } else {
+              Application.store.dispatch(new RequestTopics(
+                currentPage: 1,
+                category: _category,
+                afterFetched: () {
+                  _controller.sendBack(true, RefreshStatus.completed);
+                }
+              ));
+            }
+          }
+
+          return new Scaffold(
+            appBar: new AppBar(
+              elevation: 0.0,
+              leading: new IconButton(icon: new Icon(Icons.add), onPressed: (){
+                Application.router.navigateTo(context, '/publish');
+              }),
+              title: new DropdownButton(
+                value: _category,
+                onChanged: (value){
+                  setState(() {
+                    _category = value;
+                  });
+                  if (vm.topicsOfCategory[_category]["list"].length == 0){
+                    Application.store.dispatch(new RequestTopics(category: _category, afterFetched: _noop));
+                  }
+                },
+                items: _menuItems
+              )
             ),
-            new BottomNavigationBarItem(
-              icon: new Icon(Icons.favorite),
-              title: new Text('收藏')
-            ),
-            new BottomNavigationBarItem(
-              icon: new Icon(Icons.message),
-              title: new Text('消息')
-            ),
-            new BottomNavigationBarItem(
-              icon: new Icon(Icons.verified_user),
-              title: new Text('我的')
+            body: new SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: true,
+              onRefresh: _onRefresh,
+              controller: _controller,
+              child: new ListView.builder(
+                itemCount: vm.topicsOfCategory[_category]["list"].length,
+                itemBuilder: (BuildContext context, int i) => _renderRow(context, vm.topicsOfCategory[_category]["list"][i]),
+              ),
             )
-          ],
-        ),
+          );
+        }
       );
     }
 

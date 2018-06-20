@@ -5,7 +5,7 @@ import "./topic.dart";
 RootState rootReducer(RootState state, action) {
   return new RootState(
       isLoading: loadingReducer(state.isLoading, action),
-      topics: topicsReducer(state.topics, action),
+      topicsOfCategory: topicsReducer(state.topicsOfCategory, action),
       topic: topicReducer(state.topic, action)  
     );
 }
