@@ -36,15 +36,19 @@ Stream<dynamic> fetchTopicsEpic(
 Stream<dynamic> fetchTopicEpic(Stream<dynamic> actions, EpicStore<RootState> store) {
   return new Observable(actions)
     .ofType(new TypeToken<RequestTopic>())
-    .asyncMap((action) {
-      return http.get("${apis['topic']}/${action.id}?mdrender=false")
-        .then((ret) {
+    .flatMap((action) {
+      return new Observable(() async* {
+        yield new ToggleLoading(true);
+        try {
+          final ret = await http.get("${apis['topic']}/${action.id}?mdrender=false");
           Map<String, dynamic> result = json.decode(ret.body);
           Topic topic = new Topic.fromJson(result['data']);
-          return new ResponseTopic(topic);
-        }).catchError((err) {
+          yield new ResponseTopic(topic);
+        } catch(err) {
           print(err);
-          return new ResponseTopicFailed(err);
-        });
+          yield new ResponseTopicFailed(err);
+        }
+        yield new ToggleLoading(false);
+      }());
     });
 }

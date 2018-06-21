@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter_redux/flutter_redux.dart";
 import "package:redux/redux.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
+import "../store/view_model/topic.dart";
 import "../store/model/root_state.dart";
 import "../store/model/topic.dart";
 import "../config/application.dart";
@@ -16,14 +17,22 @@ class TopicScene extends StatelessWidget {
           title: new Text("详情"),
           leading: new BackButton(),
         ),
-        body: new StoreConnector<RootState, Topic>(
-          converter: (Store<RootState> store)=> store.state.topic,
-          builder: (BuildContext context, Topic topic) => _renderDetail(context, topic),
+        body: new StoreConnector<RootState, TopicViewModel>(
+          converter: (Store<RootState> store) => TopicViewModel.fromStore(store),
+          builder: (BuildContext context, TopicViewModel vm) => _renderDetail(context, vm),
         ),
       );
     }
 
-    Widget _renderDetail(BuildContext context, Topic topic) {
+    Widget _renderDetail(BuildContext context, TopicViewModel vm) {
+      final Topic topic = vm.topic;
+      if (vm.isLoading) {
+        return new Center(
+          child: new CircularProgressIndicator(
+            strokeWidth: 2.0
+          )
+        );
+      }
       ListTile title = new ListTile(
         leading: new Image.network(topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar),
         title: new Text(topic.authorName),
