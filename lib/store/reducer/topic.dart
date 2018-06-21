@@ -10,15 +10,16 @@ Map _responseTopics(Map state, ResponseTopics action) {
     Map _v = {};
     _v.addAll(v);
     if (k == action.category) {
-      _v["currentPage"] = action.currentPage;
       List _list = [];
       if (_v['currentPage'] < action.currentPage) {
         _list.addAll(_v["list"]);
         _list.addAll(action.topics);
-      } else {
+      } 
+      if (action.currentPage == 1) {
         _list.addAll(action.topics);
       }
       _v["list"] = _list;
+      _v["currentPage"] = action.currentPage;
     }
     topicsOfCategory[k] = _v;
   });

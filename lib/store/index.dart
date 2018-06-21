@@ -8,4 +8,7 @@ import "./epic/topic.dart";
 final epic = combineEpics([fetchTopicsEpic, fetchTopicEpic]);
 
 final store = new Store<RootState>(rootReducer,
-    initialState: new RootState(), middleware: [new LoggingMiddleware.printer(), new EpicMiddleware(epic)]);
+    initialState: new RootState(), middleware: [
+      // new LoggingMiddleware.printer(), 
+      new EpicMiddleware(epic)
+    ]);

@@ -14,6 +14,7 @@ Stream<dynamic> fetchTopicsEpic(
       .ofType(new TypeToken<RequestTopics>())
       .flatMap((action) {
         return new Observable(() async* {
+          yield new ToggleLoading(true);
           try {
             final ret = await http.get("${apis['topics']}?page=${action.currentPage}&limit=6&tab=${action.category}&mdrender=false");
             Map<String, dynamic> result = json.decode(ret.body);
@@ -27,6 +28,7 @@ Stream<dynamic> fetchTopicsEpic(
             print(err);
             yield new ResponseTopicsFailed(err);
           }
+          yield new ToggleLoading(false);
         } ());
   });
 }

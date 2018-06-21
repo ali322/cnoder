@@ -9,13 +9,11 @@ import "../store/model/root_state.dart";
 import "../store/model/topic.dart";
 import "../store/action/action.dart";
 import "../store/view_model/topics.dart";
-import "./pull_and_refresh.dart";
 import "../config/application.dart";
 
 class TopicsScene extends StatefulWidget{
   @override
     State<StatefulWidget> createState() {
-      // TODO: implement createState
       return new TopicsState();
     }
 }
@@ -54,23 +52,24 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
           });
           void _onRefresh(bool up) {
             if (!up) {
-              // Application.store.dispatch(new ToggleLoading(true));
-              print('refresh');
-              Application.store.dispatch(new RequestTopics(
+              if (vm.isLoading) {
+                _controller.sendBack(false, RefreshStatus.idle);
+                return;
+              }
+              vm.fetchTopics(
                 currentPage: vm.topicsOfCategory[_category]["currentPage"] + 1,
                 category: _category,
                 afterFetched: () {
                   _controller.sendBack(false, RefreshStatus.idle);
                 }
-              ));
+              );
             } else {
-              Application.store.dispatch(new RequestTopics(
-                currentPage: 1,
+              vm.resetTopics(
                 category: _category,
                 afterFetched: () {
-                  _controller.sendBack(true, RefreshStatus.completed);
+                  _controller.sendBack(false, RefreshStatus.completed);
                 }
-              ));
+              );
             }
           }
 
@@ -87,7 +86,11 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
                     _category = value;
                   });
                   if (vm.topicsOfCategory[_category]["list"].length == 0){
-                    Application.store.dispatch(new RequestTopics(category: _category, afterFetched: _noop));
+                    vm.fetchTopics(
+                      currentPage: 1,
+                      category: _category,
+                      afterFetched: _noop
+                    );
                   }
                 },
                 items: _menuItems
@@ -99,6 +102,8 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
               onRefresh: _onRefresh,
               controller: _controller,
               child: new ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
                 itemCount: vm.topicsOfCategory[_category]["list"].length,
                 itemBuilder: (BuildContext context, int i) => _renderRow(context, vm.topicsOfCategory[_category]["list"][i]),
               ),
