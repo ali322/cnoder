@@ -1,11 +1,13 @@
-import "package:flutter/foundation.dart";
+import "package:flutter/material.dart";
 import "package:redux/redux.dart";
 import "../action/action.dart";
 import "../model/root_state.dart";
 
-typedef void FetchTopics({@required int currentPage, @required String category, @required Function afterFetched});
+typedef void FetchTopics({int currentPage, String category, Function afterFetched});
 typedef void ResetTopics({@required String category, @required Function afterFetched});
 typedef void SwitchCategory({@required String category});
+
+void _noop() {}
 
 class TopicsViewModel {
   final Map topicsOfCategory;
@@ -24,7 +26,8 @@ class TopicsViewModel {
     return new TopicsViewModel(
       topicsOfCategory: store.state.topicsOfCategory,
       isLoading: store.state.isLoading,
-      fetchTopics: ({@required int currentPage, @required String category, @required Function afterFetched}) {
+      fetchTopics: ({int currentPage = 1, String category = '', Function afterFetched = _noop}) {
+        store.dispatch(new ToggleLoading(true));
         store.dispatch(new RequestTopics(currentPage: currentPage, category: category, afterFetched: afterFetched));
       },
       resetTopics: ({@required String category, @required Function afterFetched}) {

@@ -3,12 +3,18 @@ import "package:flutter/material.dart";
 import "package:flutter_redux/flutter_redux.dart";
 import "package:redux/redux.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
-import "../store/view_model/topic.dart";
 import "../store/model/root_state.dart";
 import "../store/model/topic.dart";
-import "../config/application.dart";
+import "../store/view_model/topic.dart";
 
 class TopicScene extends StatelessWidget {
+  final String id;
+  final TopicViewModel vm;
+
+  TopicScene({@required this.id, @required this.vm}) {
+    vm.fetchTopic(id);
+  }
+
   @override
     Widget build(BuildContext context) {
       return new Scaffold(
@@ -19,22 +25,27 @@ class TopicScene extends StatelessWidget {
         ),
         body: new StoreConnector<RootState, TopicViewModel>(
           converter: (Store<RootState> store) => TopicViewModel.fromStore(store),
-          builder: (BuildContext context, TopicViewModel vm) => _renderDetail(context, vm),
+          builder: (BuildContext context, TopicViewModel vm) => vm.isLoading ? _renderLoading(context, vm) : _renderDetail(context, vm),
         ),
+      );
+    }
+
+    Widget _renderLoading(BuildContext context, TopicViewModel vm) {
+      return new Center(
+        child: new CircularProgressIndicator(
+          strokeWidth: 2.0
+        )
       );
     }
 
     Widget _renderDetail(BuildContext context, TopicViewModel vm) {
       final Topic topic = vm.topic;
-      if (vm.isLoading) {
-        return new Center(
-          child: new CircularProgressIndicator(
-            strokeWidth: 2.0
-          )
-        );
-      }
       ListTile title = new ListTile(
-        leading: new Image.network(topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar),
+        leading: new SizedBox(
+          width: 30.0,
+          height: 30.0,
+          child: new Image.network(topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar)
+        ),
         title: new Text(topic.authorName),
         subtitle: new Row(
           children: <Widget>[
@@ -92,26 +103,34 @@ class TopicScene extends StatelessWidget {
 
     Widget _renderReply(BuildContext context, Reply reply) {
       ListTile title = new ListTile(
-        leading: new Image.network(reply.authorAvatar.startsWith('//') ? 'http:${reply.authorAvatar}' : reply.authorAvatar),
+        leading: new SizedBox(
+          width: 30.0,
+          height: 30.0,
+          child: new Image.network(reply.authorAvatar.startsWith('//') ? 'http:${reply.authorAvatar}' : reply.authorAvatar),
+        ),
         title: new Text(reply.authorName),
         subtitle: new Row(
           children: <Widget>[
             new Text(DateTime.parse(reply.createdAt).toString().split('.')[0]),
           ],
         ),
-        trailing: new Row(
-          children: <Widget>[
-            new IconButton(
-              icon: new Icon(Icons.reply, size: 20.0),
-              onPressed: (){},
-            ),
-            new IconButton(
-              icon: new Icon(Icons.thumb_up, size: 15.0),
-              onPressed: (){},
-            ),
-            new Text('+${reply.ups}', style: new TextStyle(fontSize: 13.0))
-          ],
-        ),
+        trailing: new SizedBox(
+          width: 120.0,
+          child: new Row(
+            children: <Widget>[
+              new IconButton(
+                icon: new Icon(Icons.reply, size: 20.0),
+                onPressed: (){},
+              ),
+              new IconButton(
+                icon: new Icon(Icons.thumb_up, size: 15.0),
+                onPressed: (){},
+              ),
+              new Text('+${reply.ups}', style: new TextStyle(fontSize: 13.0))
+            ],
+          )
+        )
+        
       );
       return new Column(
         children: <Widget>[

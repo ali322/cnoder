@@ -9,6 +9,6 @@ final epic = combineEpics([fetchTopicsEpic, fetchTopicEpic]);
 
 final store = new Store<RootState>(rootReducer,
     initialState: new RootState(), middleware: [
-      // new LoggingMiddleware.printer(), 
+      new LoggingMiddleware.printer(), 
       new EpicMiddleware(epic)
     ]);

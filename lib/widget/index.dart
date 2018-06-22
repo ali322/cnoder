@@ -1,6 +1,6 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "./topics.dart";
+import "../container/topics.dart";
 import "./collect.dart";
 import "./message.dart";
 import "./me.dart";
@@ -9,7 +9,7 @@ class IndexScene extends StatelessWidget {
   @override
     Widget build(BuildContext context) {
       List<Widget> pages = [
-        new TopicsScene(),
+        new TopicsContainer(),
         new CollectScene(),
         new MessageScene(),
         new MeScene()

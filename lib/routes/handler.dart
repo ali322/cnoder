@@ -1,11 +1,9 @@
 import "dart:core";
 import "package:fluro/fluro.dart";
 import "package:flutter/material.dart";
-import "../store/action/action.dart";
-import "../config/application.dart";
 import "../widget/index.dart";
-import "../widget/topic.dart";
 import "../widget/publish.dart";
+import "../container/topic.dart";
 
 var handlers = {
   '/': new Handler(
@@ -14,8 +12,7 @@ var handlers = {
   }),
   '/topic/:id': new Handler(
     handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-      Application.store.dispatch(new RequestTopic(params['id'][0]));
-      return new TopicScene();
+      return new TopicContainer(id: params['id'][0]);
     }
   ),
   '/publish': new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {

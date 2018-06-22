@@ -7,11 +7,14 @@ import 'package:fluro/fluro.dart';
 import "package:pull_to_refresh/pull_to_refresh.dart";
 import "../store/model/root_state.dart";
 import "../store/model/topic.dart";
-import "../store/action/action.dart";
 import "../store/view_model/topics.dart";
 import "../config/application.dart";
 
 class TopicsScene extends StatefulWidget{
+  final TopicsViewModel vm;
+
+  TopicsScene({@required this.vm});
+
   @override
     State<StatefulWidget> createState() {
       return new TopicsState();
@@ -27,7 +30,7 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
   @override
     void initState() {
       super.initState();
-      Application.store.dispatch(new RequestTopics(afterFetched: _noop));
+      widget.vm.fetchTopics();
       _controller = new RefreshController();
     }
     @override
@@ -39,10 +42,6 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
       return new StoreConnector<RootState, TopicsViewModel>(
         converter: (Store<RootState> store) => TopicsViewModel.fromStore(store),
         builder: (BuildContext context, TopicsViewModel vm) {
-          // if (vm.isLoading == false && vm.topicsOfCategory[_category]["list"].length > 0) {
-          //   print('sendBack');
-          //   _controller.sendBack(false, RefreshStatus.completed);
-          // }
           List<DropdownMenuItem> _menuItems = [];
           vm.topicsOfCategory.forEach((k, v) {
             _menuItems.add(new DropdownMenuItem(
@@ -115,7 +114,11 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
 
     Widget _renderRow(BuildContext context, Topic topic) {
       ListTile title = new ListTile(
-        leading: new Image.network(topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar),
+        leading: new SizedBox(
+          width: 30.0,
+          height: 30.0,
+          child: new Image.network(topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar)
+        ),
         title: new Text(topic.authorName),
         subtitle: new Row(
           children: <Widget>[
