@@ -11,9 +11,7 @@ class TopicScene extends StatelessWidget {
   final String id;
   final TopicViewModel vm;
 
-  TopicScene({@required this.id, @required this.vm}) {
-    vm.fetchTopic(id);
-  }
+  TopicScene({@required this.id, @required this.vm});
 
   @override
     Widget build(BuildContext context) {

@@ -8,13 +8,11 @@ class TopicViewModel{
   final Topic topic;
   final bool isLoading;
   final Function toggleLoading;
-  final Function fetchTopic;
 
   TopicViewModel({
     @required this.topic, 
     @required this.isLoading, 
-    @required this.toggleLoading,
-    @required this.fetchTopic
+    @required this.toggleLoading
   });
 
   static TopicViewModel fromStore(Store<RootState> store) {
@@ -23,10 +21,6 @@ class TopicViewModel{
        isLoading: store.state.isLoading,
        toggleLoading: (bool isLoading) {
          store.dispatch(new ToggleLoading(isLoading));
-       },
-       fetchTopic: (String id) {
-         store.dispatch(new ToggleLoading(true));
-         store.dispatch(new RequestTopic(id));
        }
     );
   }
