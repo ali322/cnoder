@@ -1,17 +1,13 @@
 import "dart:core";
 import "package:flutter/material.dart";
-import "package:flutter_redux/flutter_redux.dart";
-import "package:redux/redux.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
-import "../store/model/root_state.dart";
 import "../store/model/topic.dart";
 import "../store/view_model/topic.dart";
 
 class TopicScene extends StatelessWidget {
-  final String id;
   final TopicViewModel vm;
 
-  TopicScene({@required this.id, @required this.vm});
+  TopicScene({@required this.vm});
 
   @override
     Widget build(BuildContext context) {
@@ -21,10 +17,7 @@ class TopicScene extends StatelessWidget {
           title: new Text("详情"),
           leading: new BackButton(),
         ),
-        body: new StoreConnector<RootState, TopicViewModel>(
-          converter: (Store<RootState> store) => TopicViewModel.fromStore(store),
-          builder: (BuildContext context, TopicViewModel vm) => vm.isLoading ? _renderLoading(context, vm) : _renderDetail(context, vm),
-        ),
+        body: vm.isLoading ? _renderLoading(context, vm) : _renderDetail(context, vm)
       );
     }
 

@@ -5,7 +5,16 @@ import "./collect.dart";
 import "./message.dart";
 import "./me.dart";
 
-class IndexScene extends StatelessWidget {
+class IndexScene extends StatefulWidget{
+  @override
+    State<StatefulWidget> createState() {
+      return new IndexState();
+    }
+}
+
+class IndexState extends State<IndexScene> {
+  int _tabIndex = 0;
+
   @override
     Widget build(BuildContext context) {
       List<Widget> pages = [
@@ -14,10 +23,16 @@ class IndexScene extends StatelessWidget {
         new MessageScene(),
         new MeScene()
       ];
-      // TODO: implement build
-      return new CupertinoTabScaffold(
-        tabBar: new CupertinoTabBar(
+      return new Scaffold(
+        bottomNavigationBar: new CupertinoTabBar(
+          activeColor: Colors.green,
           backgroundColor: const Color(0xFFF7F7F7),
+          currentIndex: _tabIndex,
+          onTap: (int i) {
+            setState(() {
+              _tabIndex = i;
+            });
+          },
           items: <BottomNavigationBarItem>[
             new BottomNavigationBarItem(
               icon: new Icon(Icons.home),
@@ -37,13 +52,11 @@ class IndexScene extends StatelessWidget {
             )
           ],
         ),
-        tabBuilder: (BuildContext context, int i) {
-          return new CupertinoTabView(
-            builder: (BuildContext context) {
-              return pages[i];
-            }
-          );
-        },
+        body: new IndexedStack(
+          children: pages,
+          index: _tabIndex,
+        )
+        
       );
     }
 }

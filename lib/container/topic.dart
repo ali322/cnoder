@@ -13,16 +13,15 @@ class TopicContainer extends StatelessWidget{
 
   @override
     Widget build(BuildContext context) {
-      // TODO: implement build
       return new StoreConnector<RootState, TopicViewModel>(
         converter: (Store<RootState> store) => TopicViewModel.fromStore(store),
-        onInit: (Store<RootState> store) {
+        onInit: (Store store) {
           store.dispatch(new ToggleLoading(true));
           store.dispatch(new RequestTopic(id));
         },
         builder: (BuildContext context, TopicViewModel vm) {
-          return new TopicScene(id: this.id, vm: vm);
-        },
+          return new TopicScene(vm: vm);
+        }
       );
     }
 }

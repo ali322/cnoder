@@ -1,14 +1,9 @@
 import "dart:core";
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
-import "package:flutter_redux/flutter_redux.dart";
-import "package:redux/redux.dart";
-import 'package:fluro/fluro.dart';
 import "package:pull_to_refresh/pull_to_refresh.dart";
-import "../store/model/root_state.dart";
 import "../store/model/topic.dart";
 import "../store/view_model/topics.dart";
-import "../config/application.dart";
 
 class TopicsScene extends StatefulWidget{
   final TopicsViewModel vm;
@@ -39,76 +34,76 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
       }
   @override
     Widget build(BuildContext context) {
-      return new StoreConnector<RootState, TopicsViewModel>(
-        converter: (Store<RootState> store) => TopicsViewModel.fromStore(store),
-        builder: (BuildContext context, TopicsViewModel vm) {
-          List<DropdownMenuItem> _menuItems = [];
-          vm.topicsOfCategory.forEach((k, v) {
-            _menuItems.add(new DropdownMenuItem(
-              value: k,
-              child: new Text(v["label"]),
-            ));
-          });
-          void _onRefresh(bool up) {
-            if (!up) {
-              if (vm.isLoading) {
-                _controller.sendBack(false, RefreshStatus.idle);
-                return;
-              }
-              vm.fetchTopics(
-                currentPage: vm.topicsOfCategory[_category]["currentPage"] + 1,
-                category: _category,
-                afterFetched: () {
-                  _controller.sendBack(false, RefreshStatus.idle);
-                }
-              );
-            } else {
-              vm.resetTopics(
-                category: _category,
-                afterFetched: () {
-                  _controller.sendBack(false, RefreshStatus.completed);
-                }
-              );
-            }
-          }
+      Map topicsOfCategory = widget.vm.topicsOfCategory;
+      bool isLoading = widget.vm.isLoading;
+      FetchTopics fetchTopics = widget.vm.fetchTopics;
+      ResetTopics resetTopics = widget.vm.resetTopics;
 
-          return new Scaffold(
-            appBar: new AppBar(
-              elevation: 0.0,
-              leading: new IconButton(icon: new Icon(Icons.add), onPressed: (){
-                Application.router.navigateTo(context, '/publish');
-              }),
-              title: new DropdownButton(
-                value: _category,
-                onChanged: (value){
-                  setState(() {
-                    _category = value;
-                  });
-                  if (vm.topicsOfCategory[_category]["list"].length == 0){
-                    vm.fetchTopics(
-                      currentPage: 1,
-                      category: _category,
-                      afterFetched: _noop
-                    );
-                  }
-                },
-                items: _menuItems
-              )
-            ),
-            body: new SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: true,
-              onRefresh: _onRefresh,
-              controller: _controller,
-              child: new ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: vm.topicsOfCategory[_category]["list"].length,
-                itemBuilder: (BuildContext context, int i) => _renderRow(context, vm.topicsOfCategory[_category]["list"][i]),
-              ),
-            )
+      List<DropdownMenuItem> _menuItems = [];
+      topicsOfCategory.forEach((k, v) {
+        _menuItems.add(new DropdownMenuItem(
+          value: k,
+          child: new Text(v["label"]),
+        ));
+      });
+      void _onRefresh(bool up) {
+        if (!up) {
+          if (isLoading) {
+            _controller.sendBack(false, RefreshStatus.idle);
+            return;
+          }
+          fetchTopics(
+            currentPage: topicsOfCategory[_category]["currentPage"] + 1,
+            category: _category,
+            afterFetched: () {
+              _controller.sendBack(false, RefreshStatus.idle);
+            }
+          );
+        } else {
+          resetTopics(
+            category: _category,
+            afterFetched: () {
+              _controller.sendBack(false, RefreshStatus.completed);
+            }
           );
         }
+      }
+
+      return new Scaffold(
+        appBar: new AppBar(
+          elevation: 0.0,
+          leading: new IconButton(icon: new Icon(Icons.add), onPressed: (){
+            Navigator.of(context).pushNamed('/publish');
+          }),
+          title: new DropdownButton(
+            value: _category,
+            onChanged: (value){
+              setState(() {
+                _category = value;
+              });
+              if (topicsOfCategory[_category]["list"].length == 0){
+                fetchTopics(
+                  currentPage: 1,
+                  category: _category,
+                  afterFetched: _noop
+                );
+              }
+            },
+            items: _menuItems
+          )
+        ),
+        body: new SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          onRefresh: _onRefresh,
+          controller: _controller,
+          child: new ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: topicsOfCategory[_category]["list"].length,
+            itemBuilder: (BuildContext context, int i) => _renderRow(context, topicsOfCategory[_category]["list"][i]),
+          ),
+        )
       );
     }
 
@@ -129,7 +124,7 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         trailing: new Text('${topic.replyCount}/${topic.visitCount}'),
       );
       return new InkWell(
-        onTap: () => Application.router.navigateTo(context, '/topic/?id=${topic.id}', transition: TransitionType.inFromLeft),
+        onTap: () => Navigator.of(context).pushNamed('/topic/${topic.id}'),
         child: new Column(
           children: <Widget>[
             title,
