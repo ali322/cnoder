@@ -16,26 +16,35 @@ class TopicsScene extends StatefulWidget{
     }
 }
 
-void _noop() {}
-
 class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
   String _category = "";
   RefreshController _controller;
 
   @override
-    void initState() {
-      super.initState();
-      widget.vm.fetchTopics();
-      _controller = new RefreshController();
-    }
-    @override
-      void dispose() {
-        super.dispose();
-      }
+  void initState() {
+    super.initState();
+    widget.vm.fetchTopics();
+    _controller = new RefreshController();
+  }
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Widget _renderLoading(BuildContext context) {
+    return new Center(
+      child: new CircularProgressIndicator(
+        strokeWidth: 2.0
+      )
+    );
+  }
+
   @override
     Widget build(BuildContext context) {
-      Map topicsOfCategory = widget.vm.topicsOfCategory;
       bool isLoading = widget.vm.isLoading;
+      Map topicsOfCategory = widget.vm.topicsOfCategory;
+      bool isInit = isLoading && topicsOfCategory[_category]['list'].length == 0;
+
       FetchTopics fetchTopics = widget.vm.fetchTopics;
       ResetTopics resetTopics = widget.vm.resetTopics;
 
@@ -84,15 +93,14 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
               if (topicsOfCategory[_category]["list"].length == 0){
                 fetchTopics(
                   currentPage: 1,
-                  category: _category,
-                  afterFetched: _noop
+                  category: _category
                 );
               }
             },
             items: _menuItems
           )
         ),
-        body: new SmartRefresher(
+        body: isInit ? _renderLoading(context) : new SmartRefresher(
           enablePullDown: true,
           enablePullUp: true,
           onRefresh: _onRefresh,

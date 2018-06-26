@@ -1,5 +1,5 @@
 import "package:meta/meta.dart";
-import "./topic.dart";
+import "./model/topic.dart";
 
 
 @immutable
@@ -36,4 +36,18 @@ class RootState {
     },
     this.topic = const Topic()
   });
+
+  static RootState fromJson(dynamic json) {
+    return RootState(
+      isLoading: json['isLoading'],
+      // topicsOfCategory: json['topicsOfCategory']
+    );
+  }
+
+  dynamic toJson() {
+    return {
+      'isLoading': isLoading,
+      // topicsOfCategory: topicsOfCategory
+    };
+  }
 }

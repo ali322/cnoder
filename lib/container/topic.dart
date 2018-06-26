@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:redux/redux.dart";
 import "package:flutter_redux/flutter_redux.dart";
-import "../store/model/root_state.dart";
+import "../store/root_state.dart";
 import "../store/view_model/topic.dart";
 import "../store/action/action.dart";
 import "../widget/topic.dart";

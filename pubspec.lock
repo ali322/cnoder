@@ -235,6 +235,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.5.1"
+  path_provider:
+    dependency: transitive
+    description:
+      name: path_provider
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.1"
   plugin:
     dependency: transitive
     description:
@@ -291,6 +298,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.3.0"
+  redux_persist:
+    dependency: "direct main"
+    description:
+      name: redux_persist
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.7.0-rc.2"
+  redux_persist_flutter:
+    dependency: "direct main"
+    description:
+      name: redux_persist_flutter
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.6.0-rc.1"
   rxdart:
     dependency: "direct main"
     description:
@@ -298,6 +319,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.16.7"
+  shared_preferences:
+    dependency: transitive
+    description:
+      name: shared_preferences
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.2"
   shelf:
     dependency: transitive
     description:
