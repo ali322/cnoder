@@ -8,7 +8,7 @@ import "../store/view_model/topics.dart";
 class TopicsScene extends StatefulWidget{
   final TopicsViewModel vm;
 
-  TopicsScene({@required this.vm});
+  TopicsScene({Key key, @required this.vm}):super(key: key);
 
   @override
     State<StatefulWidget> createState() {
@@ -43,7 +43,7 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
     Widget build(BuildContext context) {
       bool isLoading = widget.vm.isLoading;
       Map topicsOfCategory = widget.vm.topicsOfCategory;
-      bool isInit = isLoading && topicsOfCategory[_category]['list'].length == 0;
+      bool isInit = isLoading || topicsOfCategory[_category]['list'].length == 0;
 
       FetchTopics fetchTopics = widget.vm.fetchTopics;
       ResetTopics resetTopics = widget.vm.resetTopics;

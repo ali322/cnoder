@@ -1,7 +1,8 @@
 import "../root_state.dart";
 import "package:redux_persist/redux_persist.dart";
-import "./loading.dart";
+import "./common.dart";
 import "./topic.dart";
+import "./login.dart";
 
 RootState rootReducer(RootState state, action) {
   if (action is PersistLoadedAction<RootState>) {
@@ -11,8 +12,10 @@ RootState rootReducer(RootState state, action) {
     print(action.error);
   }
   return new RootState(
-      isLoading: loadingReducer(state.isLoading, action),
-      topicsOfCategory: topicsReducer(state.topicsOfCategory, action),
-      topic: topicReducer(state.topic, action)  
-    );
+    tabIndex: tabReducer(state.tabIndex, action),
+    auth:  loginReducer(state.auth, action),
+    isLoading: loadingReducer(state.isLoading, action),
+    topicsOfCategory: topicsReducer(state.topicsOfCategory, action),
+    topic: topicReducer(state.topic, action)  
+  );
 }

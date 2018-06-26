@@ -6,8 +6,9 @@ import "package:redux_persist_flutter/redux_persist_flutter.dart";
 import "./root_state.dart";
 import "./reducer/root.dart";
 import "./epic/topic.dart";
+import "./epic/app.dart";
 
-final epic = combineEpics([fetchTopicsEpic, fetchTopicEpic]);
+final epic = combineEpics([doLoginEpic, fetchTopicsEpic, fetchTopicEpic]);
 
 final persistor = Persistor<RootState>(
   storage: FlutterStorage('cnoder'),

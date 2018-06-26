@@ -1,37 +1,36 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "../store/view_model/index.dart";
 import "../container/topics.dart";
 import "./collect.dart";
 import "./message.dart";
 import "./me.dart";
+import "./login.dart";
 
-class IndexScene extends StatefulWidget{
-  @override
-    State<StatefulWidget> createState() {
-      return new IndexState();
-    }
-}
+class IndexScene extends StatelessWidget {
+  final IndexViewModel vm;
 
-class IndexState extends State<IndexScene> {
-  int _tabIndex = 0;
+  IndexScene({Key key, this.vm}):super(key: key);
 
   @override
     Widget build(BuildContext context) {
+      final bool isLogined = vm.auth["isLogined"];
+      final int tabIndex = vm.tabIndex;
+      final Function selectTab = vm.selectTab;
+
       List<Widget> pages = [
         new TopicsContainer(),
         new CollectScene(),
         new MessageScene(),
-        new MeScene()
+        isLogined ? new MeScene() : new LoginScene()
       ];
       return new Scaffold(
         bottomNavigationBar: new CupertinoTabBar(
           activeColor: Colors.green,
           backgroundColor: const Color(0xFFF7F7F7),
-          currentIndex: _tabIndex,
+          currentIndex: tabIndex,
           onTap: (int i) {
-            setState(() {
-              _tabIndex = i;
-            });
+            selectTab(i);
           },
           items: <BottomNavigationBarItem>[
             new BottomNavigationBarItem(
@@ -54,7 +53,7 @@ class IndexState extends State<IndexScene> {
         ),
         body: new IndexedStack(
           children: pages,
-          index: _tabIndex,
+          index: tabIndex,
         )
         
       );

@@ -28,7 +28,7 @@ class TopicsViewModel {
       isLoading: store.state.isLoading,
       fetchTopics: ({int currentPage = 1, String category = '', Function afterFetched = _noop}) {
         store.dispatch(new ToggleLoading(true));
-        // store.dispatch(new RequestTopics(currentPage: currentPage, category: category, afterFetched: afterFetched));
+        store.dispatch(new RequestTopics(currentPage: currentPage, category: category, afterFetched: afterFetched));
       },
       resetTopics: ({@required String category, @required Function afterFetched}) {
         store.dispatch(new RequestTopics(currentPage: 1, category: category, afterFetched: afterFetched));

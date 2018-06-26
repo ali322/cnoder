@@ -7,7 +7,7 @@ import "../store/view_model/topic.dart";
 class TopicScene extends StatelessWidget {
   final TopicViewModel vm;
 
-  TopicScene({@required this.vm});
+  TopicScene({Key key, @required this.vm}):super(key: key);
 
   @override
     Widget build(BuildContext context) {

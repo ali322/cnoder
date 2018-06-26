@@ -1,15 +1,22 @@
+import "dart:convert";
 import "package:meta/meta.dart";
 import "./model/topic.dart";
 
 
 @immutable
 class RootState {
+  final int tabIndex;
+  final Map<String, dynamic> auth;
   final bool isLoading;
   final List<Topic> topics;
   final Map topicsOfCategory;
   final Topic topic;
 
   RootState({
+    this.auth = const {
+      "isLogined": false
+    },
+    this.tabIndex = 0,
     this.isLoading = false,
     this.topics = const [],
     this.topicsOfCategory = const {
@@ -39,15 +46,13 @@ class RootState {
 
   static RootState fromJson(dynamic json) {
     return RootState(
-      isLoading: json['isLoading'],
-      // topicsOfCategory: json['topicsOfCategory']
+      auth: json['auth']
     );
   }
 
   dynamic toJson() {
     return {
-      'isLoading': isLoading,
-      // topicsOfCategory: topicsOfCategory
+      'auth': auth
     };
   }
 }
