@@ -5,6 +5,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/splash-portrait" />
+            android:src="@mipmap/splash_portrait" />
     </item>
 </layer-list>
