@@ -10,8 +10,7 @@ class App extends StatelessWidget {
   final Router router = new Router();
 
   App() {
-    // persistor.load(store);
-
+    persistor.load(store);
     router.notFoundHandler = notFoundHandler;
     handlers.forEach((String path,Handler handler) {
       router.define(path, handler: handler);
@@ -34,14 +33,5 @@ class App extends StatelessWidget {
       print('initial route: ${app.initialRoute}');
 
       return  new StoreProvider(store: store, child: app);
-
-      // return new PersistorGate(
-      //   persistor: persistor,
-      //   loading: new SplashScene(),
-      //   builder: (BuildContext context) {
-      //     return new StoreProvider(store: store, child: app);
-      //   },
-      // );
-
     }
 }
