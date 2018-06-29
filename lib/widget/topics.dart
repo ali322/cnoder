@@ -134,7 +134,8 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
       List<Widget> _renderTabView() {
         final _tabViews = <Widget>[];
         topicsOfCategory.forEach((k, category) {
-          bool isInit = isLoading || topicsOfCategory[k]['list'].length == 0;
+          bool isInit = isLoading && topicsOfCategory[k]['list'].length == 0;
+          print('===>isInt $isLoading / ${topicsOfCategory[k]['list'].length}');
           _tabViews.add(isInit ? _renderLoading(context) : new SmartRefresher(
             enablePullDown: true,
             enablePullUp: true,

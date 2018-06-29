@@ -30,7 +30,6 @@ class App extends StatelessWidget {
           return match.route;
         },
       );
-      print('initial route: ${app.initialRoute}');
 
       return  new StoreProvider(store: store, child: app);
     }
