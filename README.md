@@ -18,11 +18,16 @@ cnoder build on following packages
 * [redux](https://pub.dartlang.org/packages/redux)
 * [flutter_redux](https://pub.dartlang.org/packages/flutter_redux)
 * [redux_epics](https://pub.dartlang.org/packages/redux_epics)
+* [redux_persist](https://pub.dartlang.org/packages/redux_persist)
+* [redux_persist_flutter](https://pub.dartlang.org/packages/redux_persist_flutter)
 * [rxdart](https://pub.dartlang.org/packages/rxdart)
+* [barcode_scan](https://pub.dartlang.org/packages/barcode_scan)
+* [pull_to_refresh](https://pub.dartlang.org/packages/pull_to_refresh)
+* [flutter_markdown](https://pub.dartlang.org/packages/flutter_markdown)
 
 ## Todo
 
-- finish more pages
+- finish more scenes
 - fix some unknow bugs
 
 
