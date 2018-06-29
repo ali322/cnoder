@@ -17,18 +17,47 @@ class TopicsScene extends StatefulWidget{
 }
 
 class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
-  String _category = "";
   RefreshController _controller;
+  TabController _tabController;
+  List<Tab> _tabs;
+  VoidCallback _onTabChange;
+
+  TopicsState(){
+    _onTabChange = () {
+      final topicsOfCategory = widget.vm.topicsOfCategory;
+      final fetchTopics = widget.vm.fetchTopics;
+      final currentCategory = topicsOfCategory.keys.toList()[_tabController.index];
+      if (topicsOfCategory[currentCategory]['list'].length == 0) {
+        fetchTopics(currentPage: 1, category: currentCategory);
+      }
+    };
+  }
 
   @override
   void initState() {
     super.initState();
-    widget.vm.fetchTopics();
+    final topicsOfCategory = widget.vm.topicsOfCategory;
     _controller = new RefreshController();
+
+    _tabs = <Tab>[];
+    topicsOfCategory.forEach((k, v) {
+      _tabs.add(new Tab(
+        text: v["label"]
+      ));
+    });
+    _tabController = new TabController(
+      length: _tabs.length,
+      vsync: this
+    );
+
+    _tabController.addListener(_onTabChange);
   }
+
   @override
   void dispose() {
     super.dispose();
+    _tabController.removeListener(_onTabChange);
+    _tabController.dispose();
   }
 
   Widget _renderLoading(BuildContext context) {
@@ -43,77 +72,33 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
     Widget build(BuildContext context) {
       bool isLoading = widget.vm.isLoading;
       Map topicsOfCategory = widget.vm.topicsOfCategory;
-      bool isInit = isLoading || topicsOfCategory[_category]['list'].length == 0;
-
       FetchTopics fetchTopics = widget.vm.fetchTopics;
       ResetTopics resetTopics = widget.vm.resetTopics;
 
-      List<DropdownMenuItem> _menuItems = [];
-      topicsOfCategory.forEach((k, v) {
-        _menuItems.add(new DropdownMenuItem(
-          value: k,
-          child: new Text(v["label"]),
-        ));
-      });
-      void _onRefresh(bool up) {
-        if (!up) {
-          if (isLoading) {
-            _controller.sendBack(false, RefreshStatus.idle);
-            return;
-          }
-          fetchTopics(
-            currentPage: topicsOfCategory[_category]["currentPage"] + 1,
-            category: _category,
-            afterFetched: () {
+      final _onRefresh = (String category) {
+        return (bool up) {
+          if (!up) {
+            if (isLoading) {
               _controller.sendBack(false, RefreshStatus.idle);
+              return;
             }
-          );
-        } else {
-          resetTopics(
-            category: _category,
-            afterFetched: () {
-              _controller.sendBack(false, RefreshStatus.completed);
-            }
-          );
-        }
-      }
-
-      return new Scaffold(
-        appBar: new AppBar(
-          elevation: 0.0,
-          leading: new IconButton(icon: new Icon(Icons.add), onPressed: (){
-            Navigator.of(context).pushNamed('/publish');
-          }),
-          title: new DropdownButton(
-            value: _category,
-            onChanged: (value){
-              setState(() {
-                _category = value;
-              });
-              if (topicsOfCategory[_category]["list"].length == 0){
-                fetchTopics(
-                  currentPage: 1,
-                  category: _category
-                );
+            fetchTopics(
+              currentPage: topicsOfCategory[category]["currentPage"] + 1,
+              category: category,
+              afterFetched: () {
+                _controller.sendBack(false, RefreshStatus.idle);
               }
-            },
-            items: _menuItems
-          )
-        ),
-        body: isInit ? _renderLoading(context) : new SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: true,
-          onRefresh: _onRefresh,
-          controller: _controller,
-          child: new ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: topicsOfCategory[_category]["list"].length,
-            itemBuilder: (BuildContext context, int i) => _renderRow(context, topicsOfCategory[_category]["list"][i]),
-          ),
-        )
-      );
-    }
+            );
+          } else {
+            resetTopics(
+              category: category,
+              afterFetched: () {
+                _controller.sendBack(true, RefreshStatus.completed);
+              }
+            );
+          }
+        };
+      };
 
     Widget _renderRow(BuildContext context, Topic topic) {
       ListTile title = new ListTile(
@@ -143,6 +128,46 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
             )
           ],
         ),
+      );
+    }
+
+      List<Widget> _renderTabView() {
+        final _tabViews = <Widget>[];
+        topicsOfCategory.forEach((k, category) {
+          bool isInit = isLoading || topicsOfCategory[k]['list'].length == 0;
+          _tabViews.add(isInit ? _renderLoading(context) : new SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            onRefresh: _onRefresh(k),
+            controller: _controller,
+            child: new ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: topicsOfCategory[k]["list"].length,
+              itemBuilder: (BuildContext context, int i) => _renderRow(context, topicsOfCategory[k]["list"][i]),
+            ),
+          ));
+        });
+        return _tabViews;
+      }
+      return new Scaffold(
+        appBar: new AppBar(
+          elevation: 0.0,
+          titleSpacing: 0.0,
+          bottom: null,
+          title: new Align(
+            alignment: Alignment.bottomCenter,
+            child: new TabBar(
+              labelColor: Colors.white,
+              tabs: _tabs,
+              controller: _tabController,
+            )
+          )
+        ),
+        body: new TabBarView(
+          controller: _tabController,
+          children: _renderTabView(),
+        )
       );
     }
 }

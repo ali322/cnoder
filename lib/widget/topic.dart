@@ -14,10 +14,45 @@ class TopicScene extends StatelessWidget {
       return new Scaffold(
         appBar: new AppBar(
           elevation: 0.0,
-          title: new Text("详情"),
-          leading: new BackButton(),
+          title: _renderTitle(context, vm),
+          leading: new IconButton(icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20.0), onPressed: () {
+            Navigator.maybePop(context);
+          }),
+          actions: <Widget>[
+            new IconButton(
+              icon: new Icon(Icons.reply, color: Colors.white, size: 20.0),
+              onPressed: () {
+
+              },
+            )
+          ],
         ),
         body: vm.isLoading ? _renderLoading(context, vm) : _renderDetail(context, vm)
+      );
+    }
+
+    Widget _renderTitle(BuildContext context, TopicViewModel vm) {
+      final Topic topic = vm.topic;
+      if (vm.isLoading) {
+        return null;
+      }
+      return new Container(
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            new SizedBox(
+              width: 30.0,
+              height: 30.0,
+              child: new Image.network(topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar)
+            ),
+            new Expanded(
+              child: new Container(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: new Text(topic.authorName, style: new TextStyle(color: Colors.white, fontSize: 14.0))
+              )
+            )
+          ]
+        ),
       );
     }
 
@@ -31,25 +66,9 @@ class TopicScene extends StatelessWidget {
 
     Widget _renderDetail(BuildContext context, TopicViewModel vm) {
       final Topic topic = vm.topic;
-      ListTile title = new ListTile(
-        leading: new SizedBox(
-          width: 30.0,
-          height: 30.0,
-          child: new Image.network(topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar)
-        ),
-        title: new Text(topic.authorName),
-        subtitle: new Row(
-          children: <Widget>[
-            // new Text(DateTime.parse(topic.lastReplyAt).toString().split('.')[0]),
-            new Text('share')
-          ],
-        ),
-        trailing: new Text('${topic.replyCount}/${topic.visitCount}'),
-      );
       return new SingleChildScrollView(
         child: new Column(
           children: <Widget>[
-            title,
             new Container(
               padding: const EdgeInsets.all(10.0),
               alignment: Alignment.centerLeft,

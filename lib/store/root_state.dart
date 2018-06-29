@@ -1,7 +1,7 @@
-import "dart:convert";
 import "package:meta/meta.dart";
 import "./model/topic.dart";
-
+import "./model/me.dart";
+import "./model/message.dart";
 
 @immutable
 class RootState {
@@ -11,6 +11,9 @@ class RootState {
   final List<Topic> topics;
   final Map topicsOfCategory;
   final Topic topic;
+  final Me me;
+  final List<Topic> collects;
+  final Map<String, List<Message>> messages;
 
   RootState({
     this.auth = const {
@@ -41,7 +44,10 @@ class RootState {
         "list": []
       }
     },
-    this.topic = const Topic()
+    this.topic = const Topic(),
+    this.me = const Me(),
+    this.collects = const [],
+    this.messages = const {}
   });
 
   static RootState fromJson(dynamic json) {

@@ -49,5 +49,5 @@ class Reply{
     this.authorAvatar = map["author"]["avatar_url"],
     this.content = map["content"],
     this.createdAt = map["create_at"],
-    this.ups = map["ups"].length;
+    this.ups = map["ups"]?.length;
 }

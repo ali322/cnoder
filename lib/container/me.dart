@@ -2,17 +2,17 @@ import "package:flutter/material.dart";
 import "package:redux/redux.dart";
 import "package:flutter_redux/flutter_redux.dart";
 import "../store/root_state.dart";
-import "../store/view_model/topics.dart";
+import "../store/view_model/me.dart";
 import "../store/view_model/index.dart";
-import "../widget/topics.dart";
+import "../widget/me.dart";
 import "./base.dart";
 
 bool initialized = false;
 
-class TopicsContainer extends StatelessWidget implements InitializeContainer{
+class MeContainer extends StatelessWidget implements InitializeContainer{
   final IndexViewModel vm;
 
-  TopicsContainer({Key key, @required this.vm}):super(key: key);
+  MeContainer({Key key, @required this.vm}):super(key: key);
 
   void setInitialized() {
     initialized = true;
@@ -23,15 +23,15 @@ class TopicsContainer extends StatelessWidget implements InitializeContainer{
   }
 
   void initialize() {
-    vm.fetchTopics();
+    vm.fetchMe();
   }
 
   @override
     Widget build(BuildContext context) {
-      return new StoreConnector<RootState, TopicsViewModel>(
-        converter: (Store<RootState> store) => TopicsViewModel.fromStore(store),
-        builder: (BuildContext context, TopicsViewModel vm) {
-          return new TopicsScene(vm: vm);
+      return new StoreConnector<RootState, MeViewModel>(
+        converter: (Store<RootState> store) => MeViewModel.fromStore(store),
+        builder: (BuildContext context, MeViewModel vm) {
+          return new MeScene(vm: vm);
         },
       );
     }
