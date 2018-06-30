@@ -4,10 +4,12 @@ import "package:flutter/material.dart";
 import "../container/index.dart";
 import "../widget/publish.dart";
 import "../container/topic.dart";
+import "../widget/splash.dart";
 
 Map<String, Handler> handlers = {
   '/': new Handler(
       handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+    // return new SplashScene();
     return new IndexContainer();
   }),
   '/topic/:id': new Handler(

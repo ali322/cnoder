@@ -2,7 +2,22 @@ import "package:redux/redux.dart";
 import "../action/action.dart";
 import "../model/topic.dart";
 
-final Reducer<Map> topicsReducer =  new TypedReducer<Map, ResponseTopics>(_responseTopics);
+final Reducer<Map> topicsReducer = combineReducers([
+  new TypedReducer<Map, RequestTopics>(_requestTopics),
+  new TypedReducer<Map, ResponseTopics>(_responseTopics)
+]);
+
+Map _requestTopics(Map state, RequestTopics action) {
+  Map topicsOfTopics = {};
+  state.forEach((k, v) {
+    final _v = new Map.from(v);
+    if (action.category == k) {
+      _v["isFetched"] = false;
+    }
+    topicsOfTopics[k] = _v;
+  });
+  return topicsOfTopics;
+}
 
 Map _responseTopics(Map state, ResponseTopics action) {
   Map topicsOfCategory = {};
@@ -18,6 +33,7 @@ Map _responseTopics(Map state, ResponseTopics action) {
       if (action.currentPage == 1) {
         _list.addAll(action.topics);
       }
+      _v["isFetched"] = true;
       _v["list"] = _list;
       _v["currentPage"] = action.currentPage;
     }

@@ -24,21 +24,25 @@ class RootState {
     this.topics = const [],
     this.topicsOfCategory = const {
       "": {
+        "isFetched": false,
         "label": "全部",
         "currentPage": 1,
         "list": []
       },
       "good": {
+        "isFetched": false,
         "label": "精华",
         "currentPage": 1,
         "list": []
       },
       "share": {
+        "isFetched": false,
         "label": "分享",
         "currentPage": 1,
         "list": []
       },
       "job": {
+        "isFetched": false,
         "label": "招聘",
         "currentPage": 1,
         "list": []

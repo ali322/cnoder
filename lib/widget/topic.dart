@@ -13,6 +13,7 @@ class TopicScene extends StatelessWidget {
     Widget build(BuildContext context) {
       return new Scaffold(
         appBar: new AppBar(
+          brightness: Brightness.dark,
           elevation: 0.0,
           title: _renderTitle(context, vm),
           leading: new IconButton(icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20.0), onPressed: () {

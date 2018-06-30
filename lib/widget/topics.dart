@@ -134,9 +134,9 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
       List<Widget> _renderTabView() {
         final _tabViews = <Widget>[];
         topicsOfCategory.forEach((k, category) {
-          bool isInit = isLoading && topicsOfCategory[k]['list'].length == 0;
-          print('===>isInt $isLoading / ${topicsOfCategory[k]['list'].length}');
-          _tabViews.add(isInit ? _renderLoading(context) : new SmartRefresher(
+          bool isFetched = topicsOfCategory[k]["isFetched"];
+          print('===> $isFetched');
+          _tabViews.add(!isFetched ? _renderLoading(context) : new SmartRefresher(
             enablePullDown: true,
             enablePullUp: true,
             onRefresh: _onRefresh(k),
@@ -153,6 +153,7 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
       }
       return new Scaffold(
         appBar: new AppBar(
+          brightness: Brightness.dark,
           elevation: 0.0,
           titleSpacing: 0.0,
           bottom: null,

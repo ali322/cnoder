@@ -4,16 +4,13 @@ class SplashScene extends StatelessWidget{
   @override
     Widget build(BuildContext context) {
       return new Material(
-        color: Colors.lightGreen,
+        color: Colors.white,
         child: new Padding(
           padding: const EdgeInsets.all(10.0),
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              new Text('Splash',
-                textDirection: TextDirection.ltr,
-                style: new TextStyle(fontSize: 40.0, color: Colors.white, fontWeight: FontWeight.bold)
-              )
+              new Image.asset('image/cnoder_splash.png',fit: BoxFit.fitWidth)
             ]
           ),
         ),
