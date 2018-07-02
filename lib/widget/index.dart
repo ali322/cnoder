@@ -20,33 +20,30 @@ class IndexScene extends StatefulWidget{
 }
 
 class IndexState extends State<IndexScene> {
-  List scenes;
+  List _renderScenes(bool isLogined) {
+    final bool isLogined = widget.vm.auth["isLogined"];
+    return <Widget>[
+      new TopicsContainer(vm: widget.vm),
+      isLogined ? new CollectContainer(vm: widget.vm) : new LoginScene(),
+      isLogined ? new MessageContainer(vm: widget.vm,) : new LoginScene(),
+      isLogined ? new MeContainer(vm: widget.vm,) : new LoginScene()
+    ];
+  }
 
   @override
-    void initState() {
-      super.initState();
-      final int tabIndex = widget.vm.tabIndex;
+    Widget build(BuildContext context) {
       final bool isLogined = widget.vm.auth["isLogined"];
-      scenes = <Widget>[
-        new TopicsContainer(vm: widget.vm),
-        isLogined ? new CollectContainer(vm: widget.vm) : new LoginScene(),
-        isLogined ? new MessageContainer(vm: widget.vm,) : new LoginScene(),
-        isLogined ? new MeContainer(vm: widget.vm,) : new LoginScene()
-      ];
-      final currentScene = scenes[tabIndex];
+      final List scenes = _renderScenes(isLogined);
+      final int tabIndex = widget.vm.tabIndex;
+      final Function setTab = widget.vm.selectTab;
+
+      final currentScene = scenes[0];
       if (currentScene is InitializeContainer) {
         if (currentScene.getInitialized() == false) {
           currentScene.initialize();
           currentScene.setInitialized();
         }
       }
-    }
-
-  @override
-    Widget build(BuildContext context) {
-      final bool isLogined = widget.vm.auth["isLogined"];
-      final int tabIndex = widget.vm.tabIndex;
-      final Function setTab = widget.vm.selectTab;
 
       return new Scaffold(
         bottomNavigationBar: new CupertinoTabBar(

@@ -135,7 +135,6 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         final _tabViews = <Widget>[];
         topicsOfCategory.forEach((k, category) {
           bool isFetched = topicsOfCategory[k]["isFetched"];
-          print('===> $isFetched');
           _tabViews.add(!isFetched ? _renderLoading(context) : new SmartRefresher(
             enablePullDown: true,
             enablePullUp: true,

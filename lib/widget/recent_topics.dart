@@ -1,21 +1,20 @@
 import "package:flutter/material.dart";
-import "../store/view_model/collect.dart";
-import "../store/model/topic.dart";
 
-class CollectScene extends StatelessWidget{
-  final CollectViewModel vm;
+class RecentTopicsScene extends StatelessWidget{
+  final List topics;
 
-  CollectScene({Key key, @required this.vm}):super(key: key);
-
+  RecentTopicsScene({Key key, this.topics}):super(key: key);
 
   @override
     Widget build(BuildContext context) {
-      final topics = vm.collects;
       return new Scaffold(
         appBar: new AppBar(
           brightness: Brightness.dark,
           elevation: 0.0,
-          title: new Text('收藏', style: new TextStyle(color: Colors.white, fontSize: 18.0)),
+          title: new Text('最近主题', style: new TextStyle(color: Colors.white, fontSize: 18.0)),
+          leading: new IconButton(icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20.0), onPressed: () {
+            Navigator.maybePop(context);
+          }),
         ),
         body: new ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
@@ -26,17 +25,17 @@ class CollectScene extends StatelessWidget{
       );
     }
 
-    Widget _renderRow(BuildContext context, Topic topic) {
+    Widget _renderRow(BuildContext context, Map item) {
       ListTile title = new ListTile(
         leading: new SizedBox(
           width: 30.0,
           height: 30.0,
-          child: new Image.network(topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar)
+          child: new Image.network(item["authorAvatar"].startsWith('//') ? 'http:${item["authorAvatar"]}' : item["authorAvatar"])
         ),
-        title: new Text(topic.authorName),
+        title: new Text(item["authorName"]),
         subtitle: new Row(
           children: <Widget>[
-            new Text(DateTime.parse(topic.lastReplyAt).toString().split('.')[0])
+            new Text(DateTime.parse(item["lastReplyAt"]).toString().split('.')[0])
           ],
         ),
       );
@@ -47,7 +46,7 @@ class CollectScene extends StatelessWidget{
             new Container(
               padding: const EdgeInsets.all(10.0),
               alignment: Alignment.centerLeft,
-              child: new Text(topic.title)
+              child: new Text(item["title"])
             )
           ],
         ),
