@@ -35,7 +35,7 @@ class RecentRepliesScene extends StatelessWidget{
         title: new Text(item["authorName"]),
         subtitle: new Row(
           children: <Widget>[
-            new Text(DateTime.parse(item["lastReplyAt"]).toString().split('.')[0])
+            new Text(item["lastReplyAt"])
           ],
         ),
       );

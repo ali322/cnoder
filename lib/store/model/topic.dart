@@ -1,8 +1,11 @@
+import "../../common/helper.dart";
+
 class Topic {
   final String id;
   final String authorName;
   final String authorAvatar;
   final String title;
+  final String tag;
   final String content;
   final String lastReplyAt;
   final int replyCount;
@@ -11,7 +14,7 @@ class Topic {
   final List replies;
 
   const Topic({
-    this.authorAvatar = "", this.authorName ="", this.id = "", this.title = "", this.content = "", this.lastReplyAt = "", this.visitCount = 0, this.replyCount = 0, this.top = false, this.replies = const []
+    this.authorAvatar = "", this.authorName ="", this.id = "", this.title = "", this.tag = "",this.content = "", this.lastReplyAt = "", this.visitCount = 0, this.replyCount = 0, this.top = false, this.replies = const []
   });
 
   List<Reply> formatedReplies() {
@@ -27,8 +30,9 @@ class Topic {
     this.authorName = map["author"]["loginname"],
     this.authorAvatar = map["author"]["avatar_url"],
     this.title = map["title"],
+    this.tag = map["tab"],
     this.content = map["content"],
-    this.lastReplyAt = map["last_reply_at"],
+    this.lastReplyAt = fromNow(map["last_reply_at"]),
     this.replyCount = map["reply_count"],
     this.visitCount = map["visit_count"],
     this.top = map["top"],
@@ -48,6 +52,6 @@ class Reply{
     this.authorName = map["author"]["loginname"],
     this.authorAvatar = map["author"]["avatar_url"],
     this.content = map["content"],
-    this.createdAt = map["create_at"],
+    this.createdAt = fromNow(map["create_at"]),
     this.ups = map["ups"]?.length;
 }

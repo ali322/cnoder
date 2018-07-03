@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "../store/view_model/message.dart";
+import "package:flutter_markdown/flutter_markdown.dart";
 import "../store/model/message.dart";
 
 class MessageScene extends StatefulWidget{
@@ -23,6 +24,14 @@ class MessageState extends State<MessageScene> with TickerProviderStateMixin{
       _tabController.dispose();
     }
 
+  Widget _renderLoading(BuildContext context) {
+      return new Center(
+        child: new CircularProgressIndicator(
+          strokeWidth: 2.0
+        )
+      );
+    }
+
   @override
     Widget build(BuildContext context) {
       final messages = widget.vm.messages;
@@ -30,7 +39,7 @@ class MessageState extends State<MessageScene> with TickerProviderStateMixin{
         final _tabViews = <Widget>[];
         messages.forEach((k, v) {
           _tabViews.add(new ListView.builder(
-            physics: new NeverScrollableScrollPhysics(),
+            // physics: new NeverScrollableScrollPhysics(),
             // shrinkWrap: true,
             itemCount: v.length,
             itemBuilder: (BuildContext context, int i) => _renderRow(context, v[i]),
@@ -59,7 +68,7 @@ class MessageState extends State<MessageScene> with TickerProviderStateMixin{
             )
           )
         ),
-        body: new TabBarView(
+        body: widget.vm.isLoading ? _renderLoading(context) : new TabBarView(
           controller: _tabController,
           children: _renderTabViews(),
         )
@@ -76,7 +85,7 @@ class MessageState extends State<MessageScene> with TickerProviderStateMixin{
         title: new Text(message.authorName),
         subtitle: new Row(
           children: <Widget>[
-            new Text(DateTime.parse(message.replyAt).toString().split('.')[0])
+            new Text(message.replyAt)
           ],
         ),
       );
@@ -99,7 +108,7 @@ class MessageState extends State<MessageScene> with TickerProviderStateMixin{
           new Container(
             padding: const EdgeInsets.all(10.0),
             alignment: Alignment.centerLeft,
-            child: new Text(message.content),
+            child: new MarkdownBody(data: message.content),
           ),
         ],
       );

@@ -110,8 +110,7 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         title: new Text(topic.authorName),
         subtitle: new Row(
           children: <Widget>[
-            new Text(DateTime.parse(topic.lastReplyAt).toString().split('.')[0]),
-            new Text('share')
+            new Text(topic.lastReplyAt)
           ],
         ),
         trailing: new Text('${topic.replyCount}/${topic.visitCount}'),

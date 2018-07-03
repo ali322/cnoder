@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "../store/view_model/me.dart";
 import "./recent_replies.dart";
 import "./recent_topics.dart";
+import "./publish.dart";
 
 class MeScene extends StatelessWidget{
   final MeViewModel vm;
@@ -17,7 +18,7 @@ class MeScene extends StatelessWidget{
           elevation: 0.0,
           title: new Text('我的', style: new TextStyle(color: Colors.white, fontSize: 18.0))
         ),
-        body: new Column(
+        body:  vm.isLoading ? _renderLoading(context) : new Column(
           children: <Widget>[
             _renderTitle(context),
             new Divider(
@@ -29,6 +30,14 @@ class MeScene extends StatelessWidget{
             ),
             _renderLogout(context)
           ],
+        )
+      );
+    }
+
+  Widget _renderLoading(BuildContext context) {
+      return new Center(
+        child: new CircularProgressIndicator(
+          strokeWidth: 2.0
         )
       );
     }
@@ -76,6 +85,26 @@ class MeScene extends StatelessWidget{
         children: ListTile.divideTiles(
           context: context, 
           tiles: [
+            new ListTile(
+              contentPadding: const EdgeInsets.all(0.0),
+              title: new Row(
+                children: <Widget>[
+                  new Icon(Icons.note_add, color: Color(0xFF999999)),
+                  new Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child:new Text('新建主题')
+                  )
+                ],
+              ),
+              trailing: new Icon(Icons.arrow_forward_ios, size: 14.0),
+              onTap: () {
+                Navigator.of(context).push(new MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return new PublishScene();
+                  }
+                ));
+              },
+            ),
             new ListTile(
               contentPadding: const EdgeInsets.all(0.0),
               title: new Row(

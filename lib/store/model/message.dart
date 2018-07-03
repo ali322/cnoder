@@ -1,3 +1,5 @@
+import "../../common/helper.dart";
+
 class Message{
   String id;
   String type;
@@ -15,6 +17,6 @@ class Message{
     this.authorAvatar = map["author"]["avatar_url"],
     this.topicId = map["topic"]["id"],
     this.topicTitle = map["topic"]["title"],
-    this.replyAt = map["reply"]["create_at"],
+    this.replyAt =  fromNow(map["reply"]["create_at"]),
     this.content = map["reply"]["content"];
 }

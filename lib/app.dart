@@ -1,8 +1,6 @@
 import "package:flutter/material.dart";
 import "package:fluro/fluro.dart";
 import "package:flutter_redux/flutter_redux.dart";
-import "package:redux_persist_flutter/redux_persist_flutter.dart";
-import "./widget/splash.dart";
 import "./route/handler.dart";
 import "./store/index.dart";
 

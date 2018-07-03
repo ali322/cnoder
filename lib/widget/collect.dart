@@ -17,11 +17,19 @@ class CollectScene extends StatelessWidget{
           elevation: 0.0,
           title: new Text('收藏', style: new TextStyle(color: Colors.white, fontSize: 18.0)),
         ),
-        body: new ListView.builder(
+        body: vm.isLoading ? _renderLoading(context) : new ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: topics.length,
           itemBuilder: (BuildContext context, int i) => _renderRow(context, topics[i])
+        )
+      );
+    }
+
+    Widget _renderLoading(BuildContext context) {
+      return new Center(
+        child: new CircularProgressIndicator(
+          strokeWidth: 2.0
         )
       );
     }
@@ -36,7 +44,7 @@ class CollectScene extends StatelessWidget{
         title: new Text(topic.authorName),
         subtitle: new Row(
           children: <Widget>[
-            new Text(DateTime.parse(topic.lastReplyAt).toString().split('.')[0])
+            new Text(topic.lastReplyAt)
           ],
         ),
       );

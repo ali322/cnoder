@@ -50,3 +50,70 @@ Stream<dynamic> fetchTopicEpic(Stream<dynamic> actions, EpicStore<RootState> sto
       }());
     });
 }
+
+Stream<dynamic> createTopicEpic(Stream<dynamic> actions, EpicStore<RootState> store) {
+  return new Observable(actions)
+    .ofType(new TypeToken<StartCreateTopic>())
+    .flatMap((action) {
+      return new Observable(() async* {
+        try {
+          final ret = await http.post("${apis['topics']}", body: {
+            "accessToken": store.state.auth["accessToken"],
+            "title": action.topic.title,
+            "tab": action.topic.tag,
+            "content": action.topic.content
+          });
+          Map<String, dynamic> result = json.decode(ret.body);
+          yield new FinishCreateTopic(result["topic_id"]);
+        } catch(err) {
+          print(err);
+          yield new FinishCreateTopicFailed(err);
+        }
+        yield new ToggleLoading(false);
+      }());
+    });
+}
+
+Stream<dynamic> saveTopicEpic(Stream<dynamic> actions, EpicStore<RootState> store) {
+  return new Observable(actions)
+    .ofType(new TypeToken<StartSaveTopic>())
+    .flatMap((action) {
+      return new Observable(() async* {
+        try {
+          final ret = await http.post("${apis['saveTopic']}", body: {
+            "accessToken": store.state.auth["accessToken"],
+            "title": action.topic.title,
+            "tab": action.topic.tag,
+            "content": action.topic.content
+          });
+          Map<String, dynamic> result = json.decode(ret.body);
+          yield new FinishSaveTopic(result["topic_id"]);
+        } catch(err) {
+          print(err);
+          yield new FinishSaveTopicFailed(err);
+        }
+        yield new ToggleLoading(false);
+      }());
+    });
+}
+
+Stream<dynamic> createReplyEpic(Stream<dynamic> actions, EpicStore<RootState> store) {
+  return new Observable(actions)
+    .ofType(new TypeToken<StartCreateReply>())
+    .flatMap((action) {
+      return new Observable(() async* {
+        try {
+          final ret = await http.post("${apis['reply2topic']}/${action.id}/replies", body: {
+            "accessToken": store.state.auth["accessToken"],
+            "content": action.content,
+          });
+          Map<String, dynamic> result = json.decode(ret.body);
+          yield new FinishCreateReply(result["reply_id"]);
+        } catch(err) {
+          print(err);
+          yield new FinishCreateReplyFailed(err);
+        }
+        yield new ToggleLoading(false);
+      }());
+    });
+}

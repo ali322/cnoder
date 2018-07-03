@@ -1,4 +1,4 @@
-import "./topic.dart";
+import "../../common/helper.dart";
 
 class Me{
   final String username;
@@ -26,7 +26,7 @@ class Me{
         "title": v["title"],
         "authorName": v["author"]["loginname"],
         "authorAvatar": v["author"]["avatar_url"],
-        "lastReplyAt": v["last_reply_at"]
+        "lastReplyAt": fromNow(v["last_reply_at"])
       });
     });
     return topics;

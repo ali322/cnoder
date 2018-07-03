@@ -122,22 +122,31 @@ class TopicScene extends StatelessWidget {
         title: new Text(reply.authorName),
         subtitle: new Row(
           children: <Widget>[
-            new Text(DateTime.parse(reply.createdAt).toString().split('.')[0]),
+            new Text(reply.createdAt),
           ],
         ),
         trailing: new SizedBox(
-          width: 120.0,
+          width: 100.0,
           child: new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               new IconButton(
-                icon: new Icon(Icons.reply, size: 20.0),
-                onPressed: (){},
+                padding: const EdgeInsets.all(0.0),
+                onPressed: () {},
+                icon:new Icon(Icons.reply, size: 18.0)
               ),
-              new IconButton(
-                icon: new Icon(Icons.thumb_up, size: 15.0),
-                onPressed: (){},
-              ),
-              new Text('+${reply.ups}', style: new TextStyle(fontSize: 13.0))
+              new GestureDetector(
+                onTap: () {},
+                child: new Container(
+                  padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, right: 12.0),
+                  child: new Row(
+                    children: <Widget>[
+                      new Icon(Icons.thumb_up, size: 15.0),
+                      new Text('+${reply.ups}', style: new TextStyle(fontSize: 13.0))
+                    ],
+                  ),
+                )
+              )
             ],
           )
         )
