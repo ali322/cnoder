@@ -9,12 +9,14 @@ class TopicViewModel{
   final bool isLoading;
   final Function toggleLoading;
   final Function fetchTopic;
+  final Function createReply;
 
   TopicViewModel({
     @required this.topic, 
     @required this.isLoading, 
     @required this.toggleLoading,
-    @required this.fetchTopic
+    @required this.fetchTopic,
+    @required this.createReply
   });
 
   static TopicViewModel fromStore(Store<RootState> store) {
@@ -27,6 +29,9 @@ class TopicViewModel{
        fetchTopic: (String id) {
           store.dispatch(new ToggleLoading(true));
           store.dispatch(new RequestTopic(id));
+       },
+       createReply: (String id, String content) {
+         store.dispatch(new StartCreateReply(id, content));
        }
     );
   }

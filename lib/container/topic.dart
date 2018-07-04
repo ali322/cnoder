@@ -9,7 +9,7 @@ import "../widget/topic.dart";
 class TopicContainer extends StatelessWidget{
   final String id;
 
-  TopicContainer({@required this.id});
+  TopicContainer({Key key, @required this.id}):super(key: key);
 
   @override
     Widget build(BuildContext context) {

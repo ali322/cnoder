@@ -6,18 +6,22 @@ import "package:redux_persist_flutter/redux_persist_flutter.dart";
 import "./action/action.dart";
 import "./root_state.dart";
 import "./reducer/root.dart";
-import "./epic/topic.dart";
 import "./epic/app.dart";
-import "./epic/me.dart";
-import "./epic/collect.dart";
-import "./epic/message.dart";
 
 final epic = combineEpics([
   doLoginEpic, 
   fetchTopicsEpic, fetchTopicEpic, 
   fetchMeEpic,
   fetchCollectsEpic,
-  fetchMessagesEpic
+  fetchMessagesEpic,
+  fetchMessageCountEpic,
+  markAllAsReadEpic,
+  markAsReadEpic,
+  createReplyEpic,
+  saveTopicEpic,
+  createTopicEpic,
+  toggleCollectEpic,
+  likeReplyEpic,
 ]);
 
 final persistor = Persistor<RootState>(

@@ -58,15 +58,17 @@ Stream<dynamic> createTopicEpic(Stream<dynamic> actions, EpicStore<RootState> st
       return new Observable(() async* {
         try {
           final ret = await http.post("${apis['topics']}", body: {
-            "accessToken": store.state.auth["accessToken"],
-            "title": action.topic.title,
-            "tab": action.topic.tag,
-            "content": action.topic.content
+            "accesstoken": store.state.auth["accessToken"],
+            "title": action.topic["title"],
+            "tab": action.topic["tag"],
+            "content": action.topic["content"]
           });
           Map<String, dynamic> result = json.decode(ret.body);
+          action.afterCreated(result["success"], result["error_msg"]);
           yield new FinishCreateTopic(result["topic_id"]);
         } catch(err) {
           print(err);
+          action.afterCreated(false);
           yield new FinishCreateTopicFailed(err);
         }
         yield new ToggleLoading(false);
@@ -81,10 +83,11 @@ Stream<dynamic> saveTopicEpic(Stream<dynamic> actions, EpicStore<RootState> stor
       return new Observable(() async* {
         try {
           final ret = await http.post("${apis['saveTopic']}", body: {
-            "accessToken": store.state.auth["accessToken"],
-            "title": action.topic.title,
-            "tab": action.topic.tag,
-            "content": action.topic.content
+            "accesstoken": store.state.auth["accessToken"],
+            "topic_id": action.topic["id"],
+            "title": action.topic["title"],
+            "tab": action.topic["tag"],
+            "content": action.topic["content"]
           });
           Map<String, dynamic> result = json.decode(ret.body);
           yield new FinishSaveTopic(result["topic_id"]);
@@ -104,7 +107,7 @@ Stream<dynamic> createReplyEpic(Stream<dynamic> actions, EpicStore<RootState> st
       return new Observable(() async* {
         try {
           final ret = await http.post("${apis['reply2topic']}/${action.id}/replies", body: {
-            "accessToken": store.state.auth["accessToken"],
+            "accesstoken": store.state.auth["accessToken"],
             "content": action.content,
           });
           Map<String, dynamic> result = json.decode(ret.body);
@@ -112,6 +115,47 @@ Stream<dynamic> createReplyEpic(Stream<dynamic> actions, EpicStore<RootState> st
         } catch(err) {
           print(err);
           yield new FinishCreateReplyFailed(err);
+        }
+        yield new ToggleLoading(false);
+      }());
+    });
+}
+
+Stream<dynamic> toggleCollectEpic(Stream<dynamic> actions, EpicStore<RootState> store) {
+  return new Observable(actions)
+    .ofType(new TypeToken<StartToggleCollect>())
+    .flatMap((action) {
+      return new Observable(() async* {
+        try {
+          final ret = await http.post("${action.status ? apis['addCollect'] : apis['delCollect']}", body: {
+            "accesstoken": store.state.auth["accessToken"],
+            "topic_id": action.id,
+          });
+          Map<String, dynamic> result = json.decode(ret.body);
+          yield new FinishToggleCollect(result['success']);
+        } catch(err) {
+          print(err);
+          yield new FinishToggleCollectFailed(err);
+        }
+        yield new ToggleLoading(false);
+      }());
+    });
+}
+
+Stream<dynamic> likeReplyEpic(Stream<dynamic> actions, EpicStore<RootState> store) {
+  return new Observable(actions)
+    .ofType(new TypeToken<StartLikeReply>())
+    .flatMap((action) {
+      return new Observable(() async* {
+        try {
+          final ret = await http.post("${apis['likeReply']}/${action.id}/ups", body: {
+            "accesstoken": store.state.auth["accessToken"]
+          });
+          Map<String, dynamic> result = json.decode(ret.body);
+          yield new FinishLikeReply(result["success"], result['action']);
+        } catch(err) {
+          print(err);
+          yield new FinishLikeReplyFailed(err);
         }
         yield new ToggleLoading(false);
       }());

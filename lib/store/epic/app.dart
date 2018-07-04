@@ -7,6 +7,11 @@ import "../root_state.dart";
 import "../action/action.dart";
 import "../../config/api.dart" show apis;
 
+export "./collect.dart";
+export "./me.dart";
+export "./message.dart";
+export "./topic.dart";
+
 Stream<dynamic> doLoginEpic(Stream<dynamic> actions, EpicStore<RootState> store) {
   return new Observable(actions)
     .ofType(new TypeToken<StartLogin>())

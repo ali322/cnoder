@@ -45,10 +45,13 @@ class ResponseTopicFailed extends ResponseTopic {
   ResponseTopicFailed(this.err) : super.empty();
 }
 
-class StartCreateTopic{
-  Topic topic;
+class ClearTopic{}
 
-  StartCreateTopic(this.topic);
+class StartCreateTopic{
+  Map<String, String> topic;
+  Function afterCreated;
+
+  StartCreateTopic(this.topic, this.afterCreated);
 }
 
 class FinishCreateTopic{
@@ -66,7 +69,7 @@ class FinishCreateTopicFailed extends FinishCreateTopic{
 }
 
 class StartSaveTopic{
-  Topic topic;
+  Map<String, String> topic;
 
   StartSaveTopic(this.topic);
 }

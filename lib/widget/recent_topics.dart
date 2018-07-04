@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "../container/publish.dart";
 
 class RecentTopicsScene extends StatelessWidget{
   final List topics;
@@ -11,7 +12,7 @@ class RecentTopicsScene extends StatelessWidget{
         appBar: new AppBar(
           brightness: Brightness.dark,
           elevation: 0.0,
-          title: new Text('最近主题', style: new TextStyle(color: Colors.white, fontSize: 18.0)),
+          title: new Text('我的主题', style: new TextStyle(color: Colors.white, fontSize: 18.0)),
           leading: new IconButton(icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20.0), onPressed: () {
             Navigator.maybePop(context);
           }),
@@ -37,6 +38,16 @@ class RecentTopicsScene extends StatelessWidget{
           children: <Widget>[
             new Text(item["lastReplyAt"])
           ],
+        ),
+        trailing: new IconButton(
+          icon: new Icon(Icons.edit, size: 16.0),
+          onPressed: () {
+            Navigator.of(context).push(new MaterialPageRoute(
+              builder: (BuildContext context) {
+                return new PublishContainer(id: item['id']);
+              }
+            ));
+          },
         ),
       );
       return new InkWell(

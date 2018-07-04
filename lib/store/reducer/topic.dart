@@ -3,9 +3,14 @@ import "../action/action.dart";
 import "../model/topic.dart";
 
 final Reducer<Map> topicsReducer = combineReducers([
+  new TypedReducer<Map, ClearTopic>(_clearTopic),
   new TypedReducer<Map, RequestTopics>(_requestTopics),
   new TypedReducer<Map, ResponseTopics>(_responseTopics)
 ]);
+
+Map _clearTopic(Map state, ClearTopic action) {
+  return {};
+}
 
 Map _requestTopics(Map state, RequestTopics action) {
   Map topicsOfTopics = {};

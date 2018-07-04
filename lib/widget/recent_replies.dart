@@ -11,7 +11,7 @@ class RecentRepliesScene extends StatelessWidget{
         appBar: new AppBar(
           brightness: Brightness.dark,
           elevation: 0.0,
-          title: new Text('最近回复', style: new TextStyle(color: Colors.white, fontSize: 18.0)),
+          title: new Text('我的回复', style: new TextStyle(color: Colors.white, fontSize: 18.0)),
           leading: new IconButton(icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20.0), onPressed: () {
             Navigator.maybePop(context);
           }),

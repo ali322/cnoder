@@ -8,10 +8,11 @@ const Map<String, String> apis = {
   'addCollect': '$apiHost/topic_collect/collect',
   'delCollect': '$apiHost/topic_collect/de_collect',
   'userCollect': '$apiHost/topic_collect',
-  'agreeReply': '$apiHost/reply',
+  'likeReply': '$apiHost/reply',
   'authorize': '$apiHost/accesstoken',
   'user': '$apiHost/user',
   'messages': '$apiHost/messages',
   'messageCount': '$apiHost/message/count',
-  'markAllMessage': '$apiHost/message/mark_al'
+  'markAllMessage': '$apiHost/message/mark_all',
+  'markMessage': '$apiHost/message/mark_one'
 };

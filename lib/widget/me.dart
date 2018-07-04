@@ -2,7 +2,8 @@ import "package:flutter/material.dart";
 import "../store/view_model/me.dart";
 import "./recent_replies.dart";
 import "./recent_topics.dart";
-import "./publish.dart";
+import "../container/publish.dart";
+import "../common/helper.dart";
 
 class MeScene extends StatelessWidget{
   final MeViewModel vm;
@@ -43,6 +44,7 @@ class MeScene extends StatelessWidget{
     }
 
   Widget _renderTitle(BuildContext context) {
+    final me = vm.me;
     return new Container(
       padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 10.0),
       decoration: new BoxDecoration(
@@ -53,7 +55,7 @@ class MeScene extends StatelessWidget{
         children: <Widget>[
           new CircleAvatar(
             radius: 35.0,
-            backgroundImage: new NetworkImage(vm.me.avatar),
+            backgroundImage: new NetworkImage(me.avatar),
           ),
           new Padding(
             padding: const EdgeInsets.only(left: 20.0),
@@ -61,10 +63,10 @@ class MeScene extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              new Text(vm.me.username, style: new TextStyle(fontSize: 18.0)),
+              new Text(me.username, style: new TextStyle(fontSize: 18.0)),
               new Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: new Text(vm.me.createdAt, style: new TextStyle(fontSize: 14.0, color: Color(0xFFF666666)))
+                child: new Text(me.createdAt, style: new TextStyle(fontSize: 14.0, color: Color(0xFFF666666)))
               )
             ],
             ),
@@ -100,7 +102,7 @@ class MeScene extends StatelessWidget{
               onTap: () {
                 Navigator.of(context).push(new MaterialPageRoute(
                   builder: (BuildContext context) {
-                    return new PublishScene();
+                    return new PublishContainer();
                   }
                 ));
               },
@@ -112,7 +114,7 @@ class MeScene extends StatelessWidget{
                   new Icon(Icons.description, color: Color(0xFF999999)),
                   new Padding(
                     padding: const EdgeInsets.only(left: 12.0),
-                    child:new Text('最近主题')
+                    child:new Text('我的主题')
                   )
                 ],
               ),
@@ -132,7 +134,7 @@ class MeScene extends StatelessWidget{
                   new Icon(Icons.comment, color: Color(0xFF999999)),
                   new Padding(
                     padding: const EdgeInsets.only(left: 12.0),
-                    child:new Text('最近回复')
+                    child:new Text('我的回复')
                   )
                 ],
               ),

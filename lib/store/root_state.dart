@@ -8,7 +8,7 @@ class RootState {
   final int tabIndex;
   final Map<String, dynamic> auth;
   final bool isLoading;
-  final List<Topic> topics;
+  final int messageCount;
   final Map topicsOfCategory;
   final Topic topic;
   final Me me;
@@ -21,7 +21,7 @@ class RootState {
     },
     this.tabIndex = 0,
     this.isLoading = false,
-    this.topics = const [],
+    this.messageCount = 0,
     this.topicsOfCategory = const {
       "": {
         "isFetched": false,

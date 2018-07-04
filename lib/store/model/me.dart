@@ -16,7 +16,7 @@ class Me{
     this.avatar = map["avatar_url"],
     this.recentTopics = formatRecent(map["recent_topics"]),
     this.recentReplies = formatRecent(map["recent_replies"]),
-    this.createdAt = map["create_at"];
+    this.createdAt = fromNow(map["create_at"]);
 
   static List<Map> formatRecent(recent) {
     List<Map> topics = [];

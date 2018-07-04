@@ -7,6 +7,7 @@ class Topic {
   final String title;
   final String tag;
   final String content;
+  final String createdAt;
   final String lastReplyAt;
   final int replyCount;
   final int visitCount;
@@ -14,7 +15,7 @@ class Topic {
   final List replies;
 
   const Topic({
-    this.authorAvatar = "", this.authorName ="", this.id = "", this.title = "", this.tag = "",this.content = "", this.lastReplyAt = "", this.visitCount = 0, this.replyCount = 0, this.top = false, this.replies = const []
+    this.authorAvatar = "", this.authorName ="", this.id = "", this.title = "", this.tag = "",this.content = "", this.createdAt = "", this.lastReplyAt = "", this.visitCount = 0, this.replyCount = 0, this.top = false, this.replies = const []
   });
 
   List<Reply> formatedReplies() {
@@ -32,6 +33,7 @@ class Topic {
     this.title = map["title"],
     this.tag = map["tab"],
     this.content = map["content"],
+    this.createdAt = fromNow(map["create_at"]),
     this.lastReplyAt = fromNow(map["last_reply_at"]),
     this.replyCount = map["reply_count"],
     this.visitCount = map["visit_count"],

@@ -4,13 +4,25 @@ import "package:flutter_markdown/flutter_markdown.dart";
 import "../store/model/topic.dart";
 import "../store/view_model/topic.dart";
 
-class TopicScene extends StatelessWidget {
+class TopicScene extends StatefulWidget{
   final TopicViewModel vm;
 
   TopicScene({Key key, @required this.vm}):super(key: key);
 
   @override
+    State<StatefulWidget> createState() {
+      return new TopicState();
+    }
+}
+
+class TopicState extends State<TopicScene> {
+  bool _replyVisible = true;
+  String _reply = '';
+
+  @override
     Widget build(BuildContext context) {
+      final theme = Theme.of(context);
+      final vm = widget.vm;
       return new Scaffold(
         appBar: new AppBar(
           brightness: Brightness.dark,
@@ -19,16 +31,46 @@ class TopicScene extends StatelessWidget {
           leading: new IconButton(icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20.0), onPressed: () {
             Navigator.maybePop(context);
           }),
-          actions: <Widget>[
-            new IconButton(
-              icon: new Icon(Icons.reply, color: Colors.white, size: 20.0),
-              onPressed: () {
-
-              },
-            )
-          ],
         ),
-        body: vm.isLoading ? _renderLoading(context, vm) : _renderDetail(context, vm)
+        body: vm.isLoading ? _renderLoading(context, vm) : _renderDetail(context, vm),
+        bottomNavigationBar: _replyVisible ? new Container(
+          padding: const EdgeInsets.symmetric(vertical:8.0, horizontal: 10.0),
+          decoration: const BoxDecoration(
+            border: const Border(top: const BorderSide(color: Color(0xFFCCCCCC))),
+            color: Color(0xFFF7F7F7)
+          ),
+          child: new SafeArea(
+            bottom: true,
+            child: new Row(
+              children: <Widget>[
+                new Expanded(
+                  child: Theme(
+                    data: theme.copyWith(primaryColor: Color(0xFFDDDDDD)),
+                    child: new TextField(
+                      onChanged: (String value) {
+                        setState(() {
+                          _reply = value;
+                        });
+                      },
+                      decoration: new InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                        border: const OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFCCCCCC))),
+                        hintStyle: new TextStyle(color: Color(0xFF666666), fontSize: 14.0),
+                        hintText: '添加一条新回复'
+                      ),
+                    ),
+                  ),
+                ),
+                new IconButton(
+                  onPressed: () {
+                    vm.createReply(vm.topic.id, _reply);
+                  },
+                  icon: new Icon(Icons.reply, size: 20.0, color: Color(0xFF666666)),
+                )
+              ],
+            )
+          ) 
+        ) : null,
       );
     }
 
@@ -41,15 +83,10 @@ class TopicScene extends StatelessWidget {
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            new SizedBox(
-              width: 30.0,
-              height: 30.0,
-              child: new Image.network(topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar)
-            ),
             new Expanded(
               child: new Container(
                 padding: const EdgeInsets.only(left: 10.0),
-                child: new Text(topic.authorName, style: new TextStyle(color: Colors.white, fontSize: 14.0))
+                child: new Text('${topic.authorName} 发布于 ${topic.createdAt}', style: new TextStyle(color: Colors.white, fontSize: 14.0))
               )
             )
           ]
@@ -65,23 +102,40 @@ class TopicScene extends StatelessWidget {
       );
     }
 
+    bool _onScrollNotification(ScrollNotification notification) {
+      if (notification is ScrollStartNotification) {
+        setState(() {
+          _replyVisible = false;
+        });
+      }
+      if (notification is ScrollEndNotification) {
+        setState(() {
+          _replyVisible = true;
+        });
+      }
+      return false;
+    }
+
     Widget _renderDetail(BuildContext context, TopicViewModel vm) {
       final Topic topic = vm.topic;
-      return new SingleChildScrollView(
-        child: new Column(
-          children: <Widget>[
-            new Container(
-              padding: const EdgeInsets.all(10.0),
-              alignment: Alignment.centerLeft,
-              child: new Text(topic.title),
-            ),
-            new Container(
-              padding: const EdgeInsets.all(10.0),
-              alignment: Alignment.centerLeft,
-              child: new MarkdownBody(data: topic.content.replaceAll('//dn', 'http://dn')),
-            ),
-            _renderReplies(context, topic)
-          ],
+      return new NotificationListener<ScrollNotification>(
+        onNotification: _onScrollNotification,
+        child: new SingleChildScrollView(
+          child: new Column(
+            children: <Widget>[
+              new Container(
+                padding: const EdgeInsets.all(10.0),
+                alignment: Alignment.centerLeft,
+                child: new Text(topic.title),
+              ),
+              new Container(
+                padding: const EdgeInsets.all(10.0),
+                alignment: Alignment.centerLeft,
+                child: new MarkdownBody(data: topic.content.replaceAll('//dn', 'http://dn')),
+              ),
+              _renderReplies(context, topic)
+            ],
+          ),
         ),
       );
     }
