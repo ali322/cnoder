@@ -47,8 +47,28 @@ Map _responseTopics(Map state, ResponseTopics action) {
   return topicsOfCategory;
 }
 
-final Reducer<Topic> topicReducer = new TypedReducer<Topic, ResponseTopic>(_responseTopic);
+final Reducer<Topic> topicReducer = combineReducers<Topic>([
+  new TypedReducer<Topic, ResponseTopic>(_responseTopic),
+  new TypedReducer<Topic, FinishLikeReply>(_likeReply),
+  new TypedReducer<Topic, FinishToggleCollect>(_toggleCollect)
+]);
 
 Topic _responseTopic(Topic state, ResponseTopic action) {
   return action.topic;
+}
+
+Topic _likeReply(Topic topic, FinishLikeReply action) {
+  List<Reply> _replies = [];
+  topic.replies.forEach((reply) {
+    Reply _reply = Reply.cloneWith(reply);
+    if (action.id == reply.id) {
+      _reply = Reply.cloneWith(reply, action.status);
+    }
+    _replies.add(_reply);
+  });
+  return Topic.cloneWith(topic, replies: _replies);
+}
+
+Topic _toggleCollect(Topic topic, FinishToggleCollect action) {
+  return Topic.cloneWith(topic, isCollect: action.status);
 }

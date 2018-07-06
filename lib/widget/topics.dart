@@ -2,6 +2,7 @@ import "dart:core";
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 import "package:pull_to_refresh/pull_to_refresh.dart";
+import "package:cached_network_image/cached_network_image.dart";
 import "../store/model/topic.dart";
 import "../store/view_model/topics.dart";
 
@@ -105,7 +106,11 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         leading: new SizedBox(
           width: 30.0,
           height: 30.0,
-          child: new Image.network(topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar)
+          child: new CachedNetworkImage(
+            imageUrl: topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar,
+            placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
+            errorWidget: new Icon(Icons.error),
+          )
         ),
         title: new Text(topic.authorName),
         subtitle: new Row(

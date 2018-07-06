@@ -14,6 +14,8 @@ dependencies:
   flutter_markdown: "^0.1.5"
   pull_to_refresh: ^1.1.4
   barcode_scan: ^0.0.3
+  share: ^0.5.2
+  cached_network_image: ^0.4.1+1
   flutter:
     sdk: flutter
 
@@ -39,7 +41,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - image/cnoder_splash.png
+   - asset/image/cnoder_avatar.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

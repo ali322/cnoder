@@ -84,9 +84,9 @@ class PublishState extends State<PublishScene>{
                         "content": _content
                       }, (bool success, String errMsg) {
                           final _successMsg = widget.id == '' ? '创建主题成功' : '编辑主题成功';
-                        Scaffold.of(context).showSnackBar(new SnackBar(
-                          content: new Text(success ? _successMsg : errMsg),
-                        ));
+                          Scaffold.of(context).showSnackBar(new SnackBar(
+                            content: new Text(success ? _successMsg : errMsg),
+                          ));
                         setState(() {
                           _isSubmiting = false;
                         });

@@ -10,13 +10,17 @@ class TopicViewModel{
   final Function toggleLoading;
   final Function fetchTopic;
   final Function createReply;
+  final Function likeReply;
+  final Function toggleCollect;
 
   TopicViewModel({
     @required this.topic, 
     @required this.isLoading, 
     @required this.toggleLoading,
     @required this.fetchTopic,
-    @required this.createReply
+    @required this.createReply,
+    @required this.likeReply,
+    @required this.toggleCollect
   });
 
   static TopicViewModel fromStore(Store<RootState> store) {
@@ -30,8 +34,14 @@ class TopicViewModel{
           store.dispatch(new ToggleLoading(true));
           store.dispatch(new RequestTopic(id));
        },
-       createReply: (String id, String content) {
-         store.dispatch(new StartCreateReply(id, content));
+       createReply: (String id, String content, Function afterCreate) {
+         store.dispatch(new StartCreateReply(id, content, afterCreate));
+       },
+       likeReply: (String id, bool status) {
+         store.dispatch(new StartLikeReply(id, status));
+       },
+       toggleCollect: (String id, bool status) {
+         store.dispatch(new StartToggleCollect(id, status));
        }
     );
   }

@@ -6,6 +6,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/splash_portrait" />
+            android:src="@mipmap/splash" />
     </item>
 </layer-list>

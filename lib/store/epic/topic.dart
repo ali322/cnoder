@@ -64,14 +64,13 @@ Stream<dynamic> createTopicEpic(Stream<dynamic> actions, EpicStore<RootState> st
             "content": action.topic["content"]
           });
           Map<String, dynamic> result = json.decode(ret.body);
-          action.afterCreated(result["success"], result["error_msg"]);
+          action.afterCreate(result["success"], result["error_msg"]);
           yield new FinishCreateTopic(result["topic_id"]);
         } catch(err) {
           print(err);
-          action.afterCreated(false);
+          action.afterCreate(false, err.toString());
           yield new FinishCreateTopicFailed(err);
         }
-        yield new ToggleLoading(false);
       }());
     });
 }
@@ -90,12 +89,13 @@ Stream<dynamic> saveTopicEpic(Stream<dynamic> actions, EpicStore<RootState> stor
             "content": action.topic["content"]
           });
           Map<String, dynamic> result = json.decode(ret.body);
+          action.afterSave(result["success"], result["error_msg"]);
           yield new FinishSaveTopic(result["topic_id"]);
         } catch(err) {
           print(err);
+          action.afterSave(false, err.toString());
           yield new FinishSaveTopicFailed(err);
         }
-        yield new ToggleLoading(false);
       }());
     });
 }
@@ -111,12 +111,13 @@ Stream<dynamic> createReplyEpic(Stream<dynamic> actions, EpicStore<RootState> st
             "content": action.content,
           });
           Map<String, dynamic> result = json.decode(ret.body);
+          action.afterCreate(result["success"], result["error_msg"]);
           yield new FinishCreateReply(result["reply_id"]);
         } catch(err) {
           print(err);
+          action.afterCreate(false, err.toString());
           yield new FinishCreateReplyFailed(err);
         }
-        yield new ToggleLoading(false);
       }());
     });
 }
@@ -132,12 +133,11 @@ Stream<dynamic> toggleCollectEpic(Stream<dynamic> actions, EpicStore<RootState> 
             "topic_id": action.id,
           });
           Map<String, dynamic> result = json.decode(ret.body);
-          yield new FinishToggleCollect(result['success']);
+          yield new FinishToggleCollect(action.status);
         } catch(err) {
           print(err);
           yield new FinishToggleCollectFailed(err);
         }
-        yield new ToggleLoading(false);
       }());
     });
 }
@@ -152,12 +152,11 @@ Stream<dynamic> likeReplyEpic(Stream<dynamic> actions, EpicStore<RootState> stor
             "accesstoken": store.state.auth["accessToken"]
           });
           Map<String, dynamic> result = json.decode(ret.body);
-          yield new FinishLikeReply(result["success"], result['action']);
+          yield new FinishLikeReply(action.id, result['action'] == 'up');
         } catch(err) {
           print(err);
           yield new FinishLikeReplyFailed(err);
         }
-        yield new ToggleLoading(false);
       }());
     });
 }

@@ -6,6 +6,8 @@ PODS:
   - MTBBarcodeScanner (5.0.5)
   - path_provider (0.0.1):
     - Flutter
+  - share (0.5.2):
+    - Flutter
   - shared_preferences (0.0.1):
     - Flutter
 
@@ -13,6 +15,7 @@ DEPENDENCIES:
   - barcode_scan (from `.symlinks/plugins/barcode_scan/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
 
 SPEC REPOS:
@@ -26,6 +29,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/flutter/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  share:
+    :path: ".symlinks/plugins/share/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
 
@@ -34,6 +39,7 @@ SPEC CHECKSUMS:
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
   MTBBarcodeScanner: 3ac7b553d6bf740e7dc281d9a547962f7aea7abc
   path_provider: 09407919825bfe3c2deae39453b7a5b44f467873
+  share: 222b5dcc8031238af9d7de91149df65bad1aef75
   shared_preferences: 5a1d487c427ee18fcd3ea1f2a131569481834b53
 
 PODFILE CHECKSUM: 1e5af4103afd21ca5ead147d7b81d06f494f51a2

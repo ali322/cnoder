@@ -21,7 +21,13 @@ class App extends StatelessWidget {
         title: 'CNoder',
         debugShowCheckedModeBanner: false,
         theme: new ThemeData(
-          primarySwatch: Colors.lightGreen
+          primarySwatch: Colors.lightGreen,
+          iconTheme: new IconThemeData(
+            color: Color(0xFF666666)
+          ),
+          textTheme: new TextTheme(
+            body1: new TextStyle(color: Color(0xFF333333), fontSize: 14.0)
+          )
         ),
         onGenerateRoute: (RouteSettings routeSettings) {
           RouteMatch match = this.router.matchRoute(null, routeSettings.name, routeSettings: routeSettings, transitionType: TransitionType.inFromRight);

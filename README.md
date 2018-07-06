@@ -24,6 +24,8 @@ cnoder build on following packages
 * [barcode_scan](https://pub.dartlang.org/packages/barcode_scan)
 * [pull_to_refresh](https://pub.dartlang.org/packages/pull_to_refresh)
 * [flutter_markdown](https://pub.dartlang.org/packages/flutter_markdown)
+* [cached_network_image](https://pub.dartlang.org/packages/cached_network_image)
+* [share](https://pub.dartlang.org/packages/share)
 
 ## Todo
 

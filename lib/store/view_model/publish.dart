@@ -14,11 +14,11 @@ class PublishViewModel{
 
   static PublishViewModel fromStore(Store<RootState> store) {
     return new PublishViewModel(
-      createTopic: (Map topic, Function afterCreated) {
-        store.dispatch(new StartCreateTopic(topic, afterCreated));
+      createTopic: (Map topic, Function afterCreate) {
+        store.dispatch(new StartCreateTopic(topic, afterCreate));
       },
-      saveTopic: (Map topic) {
-        store.dispatch(new StartSaveTopic(topic));
+      saveTopic: (Map topic, Function afterSave) {
+        store.dispatch(new StartSaveTopic(topic, afterSave));
       },
       topic: store.state.topic,
       isLoading: store.state.isLoading

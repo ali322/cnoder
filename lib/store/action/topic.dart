@@ -49,9 +49,9 @@ class ClearTopic{}
 
 class StartCreateTopic{
   Map<String, String> topic;
-  Function afterCreated;
+  Function afterCreate;
 
-  StartCreateTopic(this.topic, this.afterCreated);
+  StartCreateTopic(this.topic, this.afterCreate);
 }
 
 class FinishCreateTopic{
@@ -70,13 +70,14 @@ class FinishCreateTopicFailed extends FinishCreateTopic{
 
 class StartSaveTopic{
   Map<String, String> topic;
+  Function afterSave;
 
-  StartSaveTopic(this.topic);
+  StartSaveTopic(this.topic, this.afterSave);
 }
 
 class FinishSaveTopic{
   String id;
-
+  
   FinishSaveTopic(this.id);
 
   FinishSaveTopic.failed():this("");
@@ -91,8 +92,9 @@ class FinishSaveTopicFailed extends FinishSaveTopic{
 class StartCreateReply{
   String id;
   String content;
+  Function afterCreate;
 
-  StartCreateReply(this.id, this.content);
+  StartCreateReply(this.id, this.content, this.afterCreate);
 }
 
 class FinishCreateReply{
@@ -117,9 +119,9 @@ class StartToggleCollect{
 }
 
 class FinishToggleCollect{
-  bool success;
+  bool status;
 
-  FinishToggleCollect(this.success);
+  FinishToggleCollect(this.status);
 
   FinishToggleCollect.failed(): this(false);
 }
@@ -132,17 +134,18 @@ class FinishToggleCollectFailed extends FinishToggleCollect{
 
 class StartLikeReply{
   String id;
+  bool status;
 
-  StartLikeReply(this.id);
+  StartLikeReply(this.id, this.status);
 }
 
 class FinishLikeReply{
-  bool success;
-  String action;
+  String id;
+  bool status;
 
-  FinishLikeReply(this.success, this.action);
+  FinishLikeReply(this.id, this.status);
 
-  FinishLikeReply.failed(): this(false, '');
+  FinishLikeReply.failed(): this("", false);
 }
 
 class FinishLikeReplyFailed extends FinishLikeReply{

@@ -76,7 +76,7 @@ class IndexState extends State<IndexScene> {
               title: new Text('消息')
             ),
             new BottomNavigationBarItem(
-              icon: new Icon(Icons.verified_user),
+              icon: new Icon(Icons.person),
               title: new Text('我的')
             )
           ],
