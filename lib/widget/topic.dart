@@ -19,11 +19,12 @@ class TopicScene extends StatefulWidget{
 
 enum MenuType {collect, reply}
 
-class TopicState extends State<TopicScene> {
-  bool _replyVisible = false;
+class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
   bool _isSubmiting = false;
   FocusNode _replyFocusNode;
   TextEditingController _replyController;
+  Animation _upsAnimation;
+  AnimationController _animationController;
 
   @override
     void initState() {
@@ -53,14 +54,14 @@ class TopicState extends State<TopicScene> {
           actions: <Widget>[
             new IconButton(
               onPressed: () {
-                showModalBottomSheet(context: context, builder: (BuildContext context) => _renderBottomSheet(context));
+                showModalBottomSheet(context: context, builder: (BuildContext context) => _renderMoreSheet(context));
               },
               icon: new Icon(Icons.more_horiz, color: Colors.white),
             )
           ],
         ),
         body: vm.isLoading ? _renderLoading(context, vm) : _renderDetail(context, vm),
-        bottomNavigationBar: _renderReplyFrame()
+        // bottomNavigationBar: _renderReplyFrame()
       );
     }
 
@@ -82,66 +83,6 @@ class TopicState extends State<TopicScene> {
             )
           ]
         ),
-      );
-    }
-
-    Widget _renderReplyFrame() {
-      final theme = Theme.of(context);
-      final createReply = widget.vm.createReply;
-      final id = widget.vm.topic.id;
-      return new Builder(
-        builder: (BuildContext context) {
-          return new AnimatedOpacity(
-            opacity: _replyVisible ? 1.0: 0.0,
-            duration: new Duration(microseconds: 300),
-            child: new Container(
-                padding: const EdgeInsets.symmetric(vertical:8.0, horizontal: 10.0),
-                decoration: const BoxDecoration(
-                  border: const Border(top: const BorderSide(color: Color(0xFFCCCCCC))),
-                  color: Color(0xFFF7F7F7)
-                ),
-                child: new SafeArea(
-                  bottom: true,
-                  child: new Row(
-                    children: <Widget>[
-                      new Expanded(
-                        child: Theme(
-                          data: theme.copyWith(primaryColor: Color(0xFFDDDDDD)),
-                          child: new TextField(
-                            controller: _replyController,
-                            onChanged: (v) => _replyController.text = v,
-                            focusNode: _replyFocusNode,
-                            decoration: new InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-                              border: const OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFCCCCCC))),
-                              hintStyle: new TextStyle(color: Color(0xFF666666), fontSize: 14.0),
-                              hintText: '添加一条新回复'
-                            ),
-                          ),
-                        ),
-                      ),
-                      new IconButton(
-                        onPressed: _isSubmiting ? null : () {
-                          setState(() {
-                            _isSubmiting = true;
-                          });
-                          createReply(id, _replyController.text, (bool success, String errMsg) {
-                            setState(() {
-                              _isSubmiting = false;
-                            });
-                            Scaffold.of(context).showSnackBar(new SnackBar(
-                              content: new Text(success ? '添加回复成功' : errMsg),
-                            ));
-                          });
-                        },
-                        icon: new Icon(Icons.send, color: Color(0xFF666666)),
-                      )
-                    ],
-                  )
-                ) 
-              )
-          );
-        }
       );
     }
 
@@ -198,9 +139,7 @@ class TopicState extends State<TopicScene> {
                   new IconButton(
                     icon: new Icon(Icons.reply),
                     onPressed: () {
-                      setState(() {
-                        _replyVisible = !_replyVisible;
-                      });
+                      _showReplySheet('');
                     },
                   )
                 ],
@@ -223,7 +162,7 @@ class TopicState extends State<TopicScene> {
       children.add(new Container(
        height: 20.0,
        decoration: new BoxDecoration(
-         color: Colors.grey
+         color: Color(0xFFDDDDDD)
        ),
       ));
       children.add(new Container(
@@ -269,10 +208,7 @@ class TopicState extends State<TopicScene> {
               new IconButton(
                 padding: const EdgeInsets.all(0.0),
                 onPressed: () {
-                  setState(() {
-                    _replyController.text = '@${reply.authorName} ';
-                  });
-                  FocusScope.of(context).requestFocus(_replyFocusNode);
+                  _showReplySheet('@${reply.authorName} ');
                 },
                 icon:new Icon(Icons.reply, size: 18.0)
               ),
@@ -281,13 +217,13 @@ class TopicState extends State<TopicScene> {
                   likeReply(reply.id, !reply.liked);
                 },
                 child: new Container(
-                  padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, right: 12.0),
+                  padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, right: 6.0),
                   child: new Row(
                     children: <Widget>[
                       new Icon(Icons.thumb_up, size: 15.0),
                       new Text('+${reply.ups}', style: new TextStyle(fontSize: 13.0))
                     ],
-                  ),
+                  )
                 )
               )
             ],
@@ -307,7 +243,74 @@ class TopicState extends State<TopicScene> {
       );
     }
 
-    Widget _renderBottomSheet(BuildContext context) {
+    void _showReplySheet(String value) {
+      setState(() {
+        _replyController.text = value;
+      });
+      showModalBottomSheet(context: context, builder: (BuildContext context) => _renderReplySheet(context));
+    }
+
+    Widget _renderReplySheet(BuildContext context) {
+      final theme = Theme.of(context);
+      final createReply = widget.vm.createReply;
+      final id = widget.vm.topic.id;
+      return new Builder(
+        builder: (BuildContext context) {
+          final _focusScope = FocusScope.of(context);
+          _focusScope.reparentIfNeeded(_replyFocusNode);
+          _focusScope.requestFocus(_replyFocusNode);
+          return new SafeArea(
+            bottom: true,
+            child: new Container(
+              padding: const EdgeInsets.symmetric(vertical:8.0, horizontal: 10.0),
+              decoration: const BoxDecoration(
+                border: const Border(top: const BorderSide(color: Color(0xFFCCCCCC))),
+                color: Color(0xFFF7F7F7)
+              ),
+              child: new Row(
+                children: <Widget>[
+                  new Expanded(
+                    child: Theme(
+                      data: theme.copyWith(primaryColor: Color(0xFFDDDDDD)),
+                      child: new TextField(
+                        controller: _replyController,
+                        onChanged: (v) => _replyController.text = v,
+                        focusNode: _replyFocusNode,
+                        decoration: new InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                          border: const OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFCCCCCC))),
+                          hintStyle: new TextStyle(color: Color(0xFF666666), fontSize: 14.0),
+                          hintText: '添加一条新回复'
+                        ),
+                      ),
+                    ),
+                  ),
+                  new IconButton(
+                    onPressed: _isSubmiting ? null : () {
+                      setState(() {
+                        _isSubmiting = true;
+                      });
+                      createReply(id, _replyController.text, (bool success, String errMsg) {
+                        setState(() {
+                          _isSubmiting = false;
+                        });
+                        Scaffold.of(context).showSnackBar(new SnackBar(
+                          content: new Text(success ? '添加回复成功' : errMsg),
+                        ));
+                      });
+                    },
+                    icon: new Icon(Icons.send, color: Color(0xFF666666)),
+                  )
+                ],
+              )
+            ),
+          );
+
+        }
+      );
+    }
+
+    Widget _renderMoreSheet(BuildContext context) {
       final _topic = widget.vm.topic;
       return new SafeArea(
         bottom: true,
