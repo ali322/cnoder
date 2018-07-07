@@ -1,4 +1,5 @@
 import "../model/topic.dart";
+import "package:http/http.dart";
 
 class RequestCollects {
   final String username;
@@ -15,7 +16,7 @@ class ResponseCollects {
 }
 
 class ResponseCollectsFailed extends ResponseCollects {
-  final Error err;
+  final ClientException err;
 
   ResponseCollectsFailed(this.err) : super.empty();
 }

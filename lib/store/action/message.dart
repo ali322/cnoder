@@ -1,3 +1,4 @@
+import "package:http/http.dart";
 import "../model/message.dart";
 
 class RequestMessages {
@@ -18,7 +19,7 @@ class ResponseMessages {
 }
 
 class ResponseMessagesFailed extends ResponseMessages {
-  final Error err;
+  final ClientException err;
 
   ResponseMessagesFailed(this.err) : super.empty();
 }
@@ -34,7 +35,7 @@ class ResponseMessageCount{
 }
 
 class ResponseMessageCountFailed extends ResponseMessageCount{
-  final Error err;
+  final ClientException err;
 
   ResponseMessageCountFailed(this.err):super.failed();
 }
@@ -50,7 +51,7 @@ class FinishMarkAllAsRead{
 }
 
 class FinishMarkAllAsReadFailed extends FinishMarkAllAsRead{
-  final Error err;
+  final ClientException err;
 
   FinishMarkAllAsReadFailed(this.err):super.failed();
 }
@@ -70,7 +71,7 @@ class FinishMarkAsRead{
 }
 
 class FinishMarkAsReadFailed extends FinishMarkAsRead{
-  final Error err;
+  final ClientException err;
 
   FinishMarkAsReadFailed(this.err):super.failed();
 }

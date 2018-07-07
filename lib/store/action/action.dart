@@ -1,4 +1,5 @@
 import "package:flutter/foundation.dart";
+import "package:http/http.dart";
 export "./topic.dart";
 export "./me.dart";
 export "./message.dart";
@@ -28,7 +29,7 @@ class FinishLogin{
 }
 
 class FinishLoginFailed extends FinishLogin{
-  final Error err;
+  final ClientException err;
 
   FinishLoginFailed(this.err): super.empty();
 }

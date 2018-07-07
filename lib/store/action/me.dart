@@ -1,4 +1,5 @@
 import "../model/me.dart";
+import "package:http/http.dart";
 
 class RequestMe {
   final String username;
@@ -15,7 +16,7 @@ class ResponseMe {
 }
 
 class ResponseMeFailed extends ResponseMe {
-  final Error err;
+  final ClientException err;
 
   ResponseMeFailed(this.err) : super.empty();
 }

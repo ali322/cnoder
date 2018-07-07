@@ -1,5 +1,6 @@
 import "../model/topic.dart";
 import "package:flutter/foundation.dart";
+import "package:http/http.dart";
 
 class RequestTopics {
   final int currentPage;
@@ -20,7 +21,7 @@ class ResponseTopics {
 }
 
 class ResponseTopicsFailed {
-  final Error err;
+  final ClientException err;
 
   ResponseTopicsFailed(this.err);
 }
@@ -40,7 +41,7 @@ class ResponseTopic {
 }
 
 class ResponseTopicFailed extends ResponseTopic {
-  final Error err;
+  final ClientException err;
 
   ResponseTopicFailed(this.err) : super.empty();
 }
@@ -63,7 +64,7 @@ class FinishCreateTopic{
 }
 
 class FinishCreateTopicFailed extends FinishCreateTopic{
-  final Error err;
+  final ClientException err;
 
   FinishCreateTopicFailed(this.err): super.failed();
 }
@@ -84,7 +85,7 @@ class FinishSaveTopic{
 }
 
 class FinishSaveTopicFailed extends FinishSaveTopic{
-  final Error err;
+  final ClientException err;
 
   FinishSaveTopicFailed(this.err): super.failed();
 }
@@ -106,7 +107,7 @@ class FinishCreateReply{
 }
 
 class FinishCreateReplyFailed extends FinishCreateReply{
-  final Error err;
+  final ClientException err;
 
   FinishCreateReplyFailed(this.err): super.failed();
 }
@@ -127,7 +128,7 @@ class FinishToggleCollect{
 }
 
 class FinishToggleCollectFailed extends FinishToggleCollect{
-  final Error err;
+  final ClientException err;
 
   FinishToggleCollectFailed(this.err):super.failed();
 }
@@ -149,7 +150,7 @@ class FinishLikeReply{
 }
 
 class FinishLikeReplyFailed extends FinishLikeReply{
-  final Error err;
+  final ClientException err;
 
   FinishLikeReplyFailed(this.err):super.failed();
 }
