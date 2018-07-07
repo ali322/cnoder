@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
+import "package:cached_network_image/cached_network_image.dart";
 import "../store/view_model/me.dart";
 import "./recent_replies.dart";
 import "./recent_topics.dart";
 import "../container/publish.dart";
-import "../common/helper.dart";
 
 class MeScene extends StatelessWidget{
   final MeViewModel vm;
@@ -55,7 +55,7 @@ class MeScene extends StatelessWidget{
         children: <Widget>[
           new CircleAvatar(
             radius: 35.0,
-            backgroundImage: new NetworkImage(me.avatar),
+            backgroundImage: new CachedNetworkImageProvider(me.avatar),
           ),
           new Padding(
             padding: const EdgeInsets.only(left: 20.0),

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
-import "../store/view_model/message.dart";
+import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
+import "../store/view_model/message.dart";
 import "../store/model/message.dart";
 
 class MessageScene extends StatefulWidget{
@@ -80,7 +81,11 @@ class MessageState extends State<MessageScene> with TickerProviderStateMixin{
         leading: new SizedBox(
           width: 30.0,
           height: 30.0,
-          child: new Image.network(message.authorAvatar.startsWith('//') ? 'http:${message.authorAvatar}' : message.authorAvatar)
+          child: new CachedNetworkImage(
+            imageUrl: message.authorAvatar.startsWith('//') ? 'http:${message.authorAvatar}' : message.authorAvatar,
+            placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
+            errorWidget: new Icon(Icons.error),
+          )
         ),
         title: new Text(message.authorName),
         subtitle: new Row(

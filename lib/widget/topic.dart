@@ -1,13 +1,10 @@
 import "dart:core";
 import "package:flutter/material.dart";
 import "package:share/share.dart";
-import "package:flutter_redux/flutter_redux.dart";
-import "package:redux/redux.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
 import "package:cached_network_image/cached_network_image.dart";
 import "../store/model/topic.dart";
 import "../store/view_model/topic.dart";
-import "../store/root_state.dart";
 
 class TopicScene extends StatefulWidget{
   final TopicViewModel vm;
@@ -23,11 +20,10 @@ class TopicScene extends StatefulWidget{
 enum MenuType {collect, reply}
 
 class TopicState extends State<TopicScene> {
-  bool _replyVisible = true;
+  bool _replyVisible = false;
   bool _isSubmiting = false;
   FocusNode _replyFocusNode;
   TextEditingController _replyController;
-  VoidCallback _onReplyChange;
 
   @override
     void initState() {
@@ -58,7 +54,6 @@ class TopicState extends State<TopicScene> {
             new IconButton(
               onPressed: () {
                 showModalBottomSheet(context: context, builder: (BuildContext context) => _renderBottomSheet(context));
-                // _bottomSheetController.setState(() {});
               },
               icon: new Icon(Icons.more_horiz, color: Colors.white),
             )
@@ -82,7 +77,7 @@ class TopicState extends State<TopicScene> {
               child: new Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.only(left: 10.0),
-                child: new Text('${topic.authorName} 发布于 ${topic.createdAt}', style: new TextStyle(color: Colors.white, fontSize: 14.0))
+                child: new Text(topic.title, style: new TextStyle(color: Colors.white, fontSize: 14.0))
               )
             )
           ]
@@ -94,10 +89,12 @@ class TopicState extends State<TopicScene> {
       final theme = Theme.of(context);
       final createReply = widget.vm.createReply;
       final id = widget.vm.topic.id;
-      if (_replyVisible) {
-        return new Builder(
-          builder: (BuildContext context) {
-            return new Container(
+      return new Builder(
+        builder: (BuildContext context) {
+          return new AnimatedOpacity(
+            opacity: _replyVisible ? 1.0: 0.0,
+            duration: new Duration(microseconds: 300),
+            child: new Container(
                 padding: const EdgeInsets.symmetric(vertical:8.0, horizontal: 10.0),
                 decoration: const BoxDecoration(
                   border: const Border(top: const BorderSide(color: Color(0xFFCCCCCC))),
@@ -137,16 +134,15 @@ class TopicState extends State<TopicScene> {
                             ));
                           });
                         },
-                        icon: new Icon(Icons.reply, size: 20.0, color: Color(0xFF666666)),
+                        icon: new Icon(Icons.send, color: Color(0xFF666666)),
                       )
                     ],
                   )
                 ) 
-              );
-          }
-        );
-      }
-      return null;
+              )
+          );
+        }
+      );
     }
 
     Widget _renderLoading(BuildContext context, TopicViewModel vm) {
@@ -157,40 +153,66 @@ class TopicState extends State<TopicScene> {
       );
     }
 
-    bool _onScrollNotification(ScrollNotification notification) {
-      if (notification is ScrollStartNotification) {
-        setState(() {
-          _replyVisible = false;
-        });
-      }
-      if (notification is ScrollEndNotification) {
-        setState(() {
-          _replyVisible = true;
-        });
-      }
-      return false;
-    }
-
     Widget _renderDetail(BuildContext context, TopicViewModel vm) {
       final Topic topic = vm.topic;
-      return new NotificationListener<ScrollNotification>(
-        onNotification: _onScrollNotification,
-        child: new SingleChildScrollView(
-          child: new Column(
-            children: <Widget>[
-              new Container(
-                padding: const EdgeInsets.all(10.0),
-                alignment: Alignment.centerLeft,
-                child: new Text(topic.title),
-              ),
-              new Container(
-                padding: const EdgeInsets.all(10.0),
-                alignment: Alignment.centerLeft,
-                child: new MarkdownBody(data: topic.content.replaceAll('//dn', 'http://dn')),
-              ),
-              _renderReplies(context, topic)
-            ],
-          ),
+      final toggleCollect = vm.toggleCollect;
+      return new SingleChildScrollView(
+        child: new Column(
+          children: <Widget>[
+            new Container(
+              padding: const EdgeInsets.all(10.0),
+              alignment: Alignment.centerLeft,
+              child: new Row(
+                children: <Widget>[
+                  new SizedBox(
+                    width: 30.0,
+                    height: 30.0,
+                    child: new CachedNetworkImage(
+                      imageUrl: topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar,
+                      placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
+                      errorWidget: new Icon(Icons.error),
+                    )
+                  ),
+                  new Expanded(
+                    child: new Padding(
+                      padding: const EdgeInsets.only(left: 12.0),
+                      child: new Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          new Text(topic.authorName),
+                          new Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: new Text(topic.createdAt, style: new TextStyle(color: Color(0xFF666666), fontSize: 14.0)),
+                          )
+                        ],
+                      )
+                    ),
+                  ),
+                  new IconButton(
+                    icon: topic.isCollect ? new Icon(Icons.favorite, color: Colors.red)
+                      : new Icon(Icons.favorite_border),
+                    onPressed: () {
+                      toggleCollect(topic.id, !topic.isCollect);
+                    },
+                  ),
+                  new IconButton(
+                    icon: new Icon(Icons.reply),
+                    onPressed: () {
+                      setState(() {
+                        _replyVisible = !_replyVisible;
+                      });
+                    },
+                  )
+                ],
+              )
+            ),
+            new Container(
+              padding: const EdgeInsets.only(bottom:10.0, left: 10.0, right: 10.0),
+              alignment: Alignment.centerLeft,
+              child: new MarkdownBody(data: topic.content.replaceAll('//dn', 'http://dn')),
+            ),
+            _renderReplies(context, topic)
+          ],
         ),
       );
     }
@@ -287,65 +309,38 @@ class TopicState extends State<TopicScene> {
 
     Widget _renderBottomSheet(BuildContext context) {
       final _topic = widget.vm.topic;
-      final toggleCollect = widget.vm.toggleCollect;
-
-      return new StoreConnector<RootState, Topic>(
-        converter: (Store<RootState> store) => store.state.topic,
-        builder: (BuildContext context, Topic _newTopic) {
-          return new SafeArea(
-            bottom: true,
-            child: Container(
-              height : 100.0,
-              padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 12.0),
-              child: new Column(
+      return new SafeArea(
+        bottom: true,
+        child: Container(
+          height : 100.0,
+          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 12.0),
+          child: new Column(
+            children: <Widget>[
+              new Row(
                 children: <Widget>[
-                  new Row(
-                    children: <Widget>[
-                      new Container(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: new GestureDetector(
-                          onTap: () {
-                            toggleCollect(_newTopic.id, !_newTopic.isCollect);
-                          },
-                          child: new Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              _newTopic.isCollect ? new Icon(Icons.favorite, size: 40.0, color: Colors.red)
-                              : new Icon(Icons.favorite_border, size: 40.0),
-                              new Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: new Text('收藏', style: new TextStyle(fontSize: 14.0)),
-                              )
-                            ],
-                          ),
-                        )
+                  new Container(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: new GestureDetector(
+                      onTap: () {
+                        Share.share(_topic.title);
+                      },
+                      child: new Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          new Icon(Icons.share, size: 40.0),
+                            new Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: new Text('分享', style: new TextStyle(fontSize: 14.0)),
+                          )
+                        ],
                       ),
-                      new Container(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: new GestureDetector(
-                          onTap: () {
-                            Share.share(_topic.title);
-                          },
-                          child: new Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              new Icon(Icons.share, size: 40.0),
-                                new Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: new Text('分享', style: new TextStyle(fontSize: 14.0)),
-                              )
-                            ],
-                          ),
-                        )
-                      )
-                    ],
+                    )
                   )
                 ],
               )
-            )
-          ); 
-
-        }
-      );
+            ],
+          )
+        )
+      ); 
     }
 }
