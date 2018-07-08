@@ -60,8 +60,10 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
             )
           ],
         ),
-        body: vm.isLoading ? _renderLoading(context, vm) : _renderDetail(context, vm),
-        // bottomNavigationBar: _renderReplyFrame()
+        body: new SafeArea(
+          bottom: true,
+          child: vm.isLoading ? _renderLoading(context, vm) : _renderDetail(context, vm)
+        )
       );
     }
 
@@ -220,8 +222,12 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
                   padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, right: 6.0),
                   child: new Row(
                     children: <Widget>[
-                      new Icon(Icons.thumb_up, size: 15.0),
-                      new Text('+${reply.ups}', style: new TextStyle(fontSize: 13.0))
+                      new Icon(Icons.thumb_up, size: 15.0, 
+                        color: reply.liked ? Colors.black : Theme.of(context).iconTheme.color
+                      ),
+                      new Text('+${reply.ups}', style: new TextStyle(fontSize: 13.0, 
+                        color: reply.liked ? Colors.black : Theme.of(context).iconTheme.color)
+                      )
                     ],
                   )
                 )
