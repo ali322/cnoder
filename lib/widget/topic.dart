@@ -23,8 +23,6 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
   bool _isSubmiting = false;
   FocusNode _replyFocusNode;
   TextEditingController _replyController;
-  Animation _upsAnimation;
-  AnimationController _animationController;
 
   @override
     void initState() {

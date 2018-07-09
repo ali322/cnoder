@@ -36,8 +36,7 @@ class LoginState extends State<LoginScene>{
                 icon: new Icon(Icons.drafts),
                 label: new Text('扫码登陆'),
                 onPressed: () {
-                  doLogin(' 01206bae-f6ed-42de-bd0e-3775776deaf9');
-                  // _scan(doLogin);
+                  _scan(doLogin);
                 },
               )
             );
