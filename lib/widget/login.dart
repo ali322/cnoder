@@ -25,7 +25,6 @@ class LoginState extends State<LoginScene>{
           converter: (Store<RootState> store) {
             return (String accessToken) {
               store.dispatch(new StartLogin(accessToken, () {
-                // Navigator.of(context).pushNamed("/");
                 store.dispatch(new SelectTab(3));
               }));
             };
