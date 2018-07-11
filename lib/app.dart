@@ -3,6 +3,7 @@ import "package:fluro/fluro.dart";
 import "package:flutter_redux/flutter_redux.dart";
 import "./route/handler.dart";
 import "./store/index.dart";
+import "./store/root_state.dart";
 
 class App extends StatelessWidget {
   final Router router = new Router();
@@ -35,6 +36,6 @@ class App extends StatelessWidget {
         },
       );
 
-      return  new StoreProvider(store: store, child: app);
+      return  new StoreProvider<RootState>(store: store, child: app);
     }
 }

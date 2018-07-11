@@ -20,6 +20,26 @@ class MessageState extends State<MessageScene> with TickerProviderStateMixin{
   List<Tab> _tabs;
 
   @override
+    void initState() {
+      super.initState();
+      _tabController = new TabController(
+          length: 0,
+          vsync: this
+        );
+    }
+
+  @override
+    void didUpdateWidget(MessageScene oldWidget) {
+      super.didUpdateWidget(oldWidget);
+      if (oldWidget.vm.messages.keys.length != widget.vm.messages.keys.length) {
+          _tabController = new TabController(
+            length: widget.vm.messages.keys.length,
+            vsync: this
+          );
+      }
+    }
+
+  @override
     void dispose() {
       super.dispose();
       _tabController.dispose();
@@ -53,7 +73,6 @@ class MessageState extends State<MessageScene> with TickerProviderStateMixin{
       messages.keys.forEach((v) {
         _tabs.add(new Tab(text: v == 'read' ? '已读' : '未读'));
       });
-      _tabController = new TabController(vsync: this, length: _tabs.length);
       return new Scaffold(
         appBar: new AppBar(
           brightness: Brightness.dark,
