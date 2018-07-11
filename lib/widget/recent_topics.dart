@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:cached_network_image/cached_network_image.dart";
 import "../container/publish.dart";
 
 class RecentTopicsScene extends StatelessWidget{
@@ -31,7 +32,11 @@ class RecentTopicsScene extends StatelessWidget{
         leading: new SizedBox(
           width: 30.0,
           height: 30.0,
-          child: new Image.network(item["authorAvatar"].startsWith('//') ? 'http:${item["authorAvatar"]}' : item["authorAvatar"])
+          child: new CachedNetworkImage(
+            imageUrl: item["authorAvatar"].startsWith('//') ? 'http:${item["authorAvatar"]}' : item["authorAvatar"],
+            placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
+            errorWidget: new Icon(Icons.error),
+          )
         ),
         title: new Text(item["authorName"]),
         subtitle: new Row(

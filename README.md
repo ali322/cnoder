@@ -3,6 +3,12 @@
 
 Yet another [cnodejs.org](http://cnodejs.org) Flutter App
 
+## ScreenShot
+
+![2018-07-11 11.05.28](screenshot/1.gif)
+![2018-07-11 11.08.32](screenshot/2.gif)
+![2018-07-11 11.16.03](screenshot/3.gif)
+
 ## Develop
 1. clone this repo
 `git clone https://github.com/ali322/CNodeRN`
