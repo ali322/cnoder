@@ -8,6 +8,7 @@ Yet another [cnodejs.org](http://cnodejs.org) Flutter App
 ![2018-07-11 11.05.28](screenshot/1.gif)
 ![2018-07-11 11.08.32](screenshot/2.gif)
 ![2018-07-11 11.16.03](screenshot/3.gif)
+![2018-07-11 11.16.32](screenshot/4.gif)
 
 ## Develop
 1. clone this repo
