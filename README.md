@@ -1,5 +1,5 @@
 # cnoder
-[![Dependency Status](https://gemnasium.com/badges/github.com/ali322/cnoder.svg)](https://gemnasium.com/github.com/ali322/cnoder)
+[![Build Status](https://travis-ci.org/ali322/cnoder.svg?branch=master)](https://travis-ci.org/ali322/cnoder)
 
 Yet another [cnodejs.org](http://cnodejs.org) Flutter App
 
