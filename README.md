@@ -11,6 +11,8 @@ Yet another [cnodejs.org](http://cnodejs.org) Flutter App
 ![2018-07-11 11.16.32](screenshot/4.gif)
 
 ## Develop
+make sure finish [install Flutter](https://flutter.io/get-started/install/) successful
+
 1. clone this repo
 `git clone https://github.com/ali322/CNodeRN`
 2. install all the packages
