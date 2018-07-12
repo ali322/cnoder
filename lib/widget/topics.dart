@@ -69,6 +69,60 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
     );
   }
 
+  List<Widget> _renderTabView(BuildContext context, Map topicsOfCategory, RefreshController refreshController, Function onRefresh) {
+    final _tabViews = <Widget>[];
+    topicsOfCategory.forEach((k, category) {
+      bool isFetched = topicsOfCategory[k]["isFetched"];
+      _tabViews.add(!isFetched ? _renderLoading(context) : new SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        onRefresh: onRefresh(k),
+        controller: refreshController,
+        child: new ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: topicsOfCategory[k]["list"].length,
+          itemBuilder: (BuildContext context, int i) => _renderRow(context, topicsOfCategory[k]["list"][i]),
+        ),
+      ));
+    });
+    return _tabViews;
+  }
+
+  Widget _renderRow(BuildContext context, Topic topic) {
+    ListTile title = new ListTile(
+      leading: new SizedBox(
+        width: 30.0,
+        height: 30.0,
+        child: new CachedNetworkImage(
+          imageUrl: topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar,
+          placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
+          errorWidget: new Icon(Icons.error),
+        )
+      ),
+      title: new Text(topic.authorName),
+      subtitle: new Row(
+        children: <Widget>[
+          new Text(topic.lastReplyAt)
+        ],
+      ),
+      trailing: new Text('${topic.replyCount}/${topic.visitCount}'),
+    );
+    return new InkWell(
+      onTap: () => Navigator.of(context).pushNamed('/topic/${topic.id}'),
+      child: new Column(
+        children: <Widget>[
+          title,
+          new Container(
+            padding: const EdgeInsets.all(10.0),
+            alignment: Alignment.centerLeft,
+            child: new Text(topic.title),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
     Widget build(BuildContext context) {
       bool isLoading = widget.vm.isLoading;
@@ -101,59 +155,6 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         };
       };
 
-    Widget _renderRow(BuildContext context, Topic topic) {
-      ListTile title = new ListTile(
-        leading: new SizedBox(
-          width: 30.0,
-          height: 30.0,
-          child: new CachedNetworkImage(
-            imageUrl: topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar,
-            placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
-            errorWidget: new Icon(Icons.error),
-          )
-        ),
-        title: new Text(topic.authorName),
-        subtitle: new Row(
-          children: <Widget>[
-            new Text(topic.lastReplyAt)
-          ],
-        ),
-        trailing: new Text('${topic.replyCount}/${topic.visitCount}'),
-      );
-      return new InkWell(
-        onTap: () => Navigator.of(context).pushNamed('/topic/${topic.id}'),
-        child: new Column(
-          children: <Widget>[
-            title,
-            new Container(
-              padding: const EdgeInsets.all(10.0),
-              alignment: Alignment.centerLeft,
-              child: new Text(topic.title),
-            )
-          ],
-        ),
-      );
-    }
-
-      List<Widget> _renderTabView() {
-        final _tabViews = <Widget>[];
-        topicsOfCategory.forEach((k, category) {
-          bool isFetched = topicsOfCategory[k]["isFetched"];
-          _tabViews.add(!isFetched ? _renderLoading(context) : new SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: true,
-            onRefresh: _onRefresh(k),
-            controller: _controller,
-            child: new ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: topicsOfCategory[k]["list"].length,
-              itemBuilder: (BuildContext context, int i) => _renderRow(context, topicsOfCategory[k]["list"][i]),
-            ),
-          ));
-        });
-        return _tabViews;
-      }
       return new Scaffold(
         appBar: new AppBar(
           brightness: Brightness.dark,
@@ -171,7 +172,7 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         ),
         body: new TabBarView(
           controller: _tabController,
-          children: _renderTabView(),
+          children: _renderTabView(context, topicsOfCategory, _controller, _onRefresh),
         )
       );
     }

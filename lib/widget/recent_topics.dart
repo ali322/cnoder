@@ -47,11 +47,7 @@ class RecentTopicsScene extends StatelessWidget{
         trailing: new IconButton(
           icon: new Icon(Icons.edit, size: 16.0),
           onPressed: () {
-            Navigator.of(context).push(new MaterialPageRoute(
-              builder: (BuildContext context) {
-                return new PublishContainer(id: item['id']);
-              }
-            ));
+            Navigator.of(context).pushNamed('/publish/${item["id"]}');
           },
         ),
       );

@@ -100,11 +100,7 @@ class MeScene extends StatelessWidget{
               ),
               trailing: new Icon(Icons.arrow_forward_ios, size: 14.0),
               onTap: () {
-                Navigator.of(context).push(new MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return new PublishContainer();
-                  }
-                ));
+                Navigator.of(context).pushNamed('/publish');
               },
             ),
             new ListTile(
