@@ -20,6 +20,8 @@ Stream<dynamic> doLoginEpic(Stream<dynamic> actions, EpicStore<RootState> store)
         try {
           final ret = await http.post(apis["authorize"], body: { "accesstoken" : action.accessToken });
           Map<String, dynamic> result = json.decode(ret.body);
+          yield new ToggleLoading(true);
+          yield new RequestMe(result["loginname"]);
           action.afterFinished();
           yield new FinishLogin(accessToken: action.accessToken, username: result["loginname"], avatar: result["avatar_url"]);
         } catch(err) {
