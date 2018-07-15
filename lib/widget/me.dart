@@ -3,7 +3,6 @@ import "package:cached_network_image/cached_network_image.dart";
 import "../store/view_model/me.dart";
 import "./recent_replies.dart";
 import "./recent_topics.dart";
-import "../container/publish.dart";
 
 class MeScene extends StatelessWidget{
   final MeViewModel vm;
