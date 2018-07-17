@@ -11,7 +11,7 @@ Map _requestTopics(Map state, RequestTopics action) {
   Map topicsOfTopics = {};
   state.forEach((k, v) {
     final _v = new Map.from(v);
-    if (action.category == k) {
+    if (action.category == k && _v['list'].length == 0) {
       _v["isFetched"] = false;
     }
     topicsOfTopics[k] = _v;

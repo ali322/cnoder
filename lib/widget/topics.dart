@@ -23,17 +23,6 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
   List<Tab> _tabs;
   VoidCallback _onTabChange;
 
-  TopicsState(){
-    _onTabChange = () {
-      final topicsOfCategory = widget.vm.topicsOfCategory;
-      final fetchTopics = widget.vm.fetchTopics;
-      final currentCategory = topicsOfCategory.keys.toList()[_tabController.index];
-      if (topicsOfCategory[currentCategory]['list'].length == 0) {
-        fetchTopics(currentPage: 1, category: currentCategory);
-      }
-    };
-  }
-
   @override
   void initState() {
     super.initState();
@@ -50,6 +39,15 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
       length: _tabs.length,
       vsync: this
     );
+
+    _onTabChange = () {
+      final topicsOfCategory = widget.vm.topicsOfCategory;
+      final fetchTopics = widget.vm.fetchTopics;
+      final currentCategory = topicsOfCategory.keys.toList()[_tabController.index];
+      if (topicsOfCategory[currentCategory]['list'].length == 0) {
+        fetchTopics(currentPage: 1, category: currentCategory);
+      }
+    };
 
     _tabController.addListener(_onTabChange);
   }
