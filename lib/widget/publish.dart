@@ -27,6 +27,7 @@ class PublishState extends State<PublishScene>{
       final _form = _renderForm(context);
       return new Scaffold(
         backgroundColor: Color(0xFFDEDEDE),
+        resizeToAvoidBottomPadding: false,
         appBar: new AppBar(
           brightness: Brightness.dark,
           elevation: 0.0,

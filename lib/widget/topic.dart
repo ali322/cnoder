@@ -42,6 +42,7 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
     Widget build(BuildContext context) {
       final vm = widget.vm;
       return new Scaffold(
+        resizeToAvoidBottomPadding: false,
         appBar: new AppBar(
           brightness: Brightness.dark,
           elevation: 0.0,
