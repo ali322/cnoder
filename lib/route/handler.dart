@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "../container/index.dart";
 import "../container/topic.dart";
 import "../container/publish.dart";
+import "../container/reply.dart";
 
 Map<String, Handler> handlers = {
   '/': new Handler(
@@ -23,6 +24,20 @@ Map<String, Handler> handlers = {
   '/publish/:id': new Handler(
     handlerFunc: (BuildContext context, Map<String, dynamic> params) {
       return new PublishContainer(id: params['id'][0]);
+    }
+  ),
+  '/reply/:id': new Handler(
+    handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      return new ReplyContainer(id: params['id'][0]);
+    }
+  ),
+  '/reply/:id/:replyid/:replyto': new Handler(
+    handlerFunc: (BuildContext context, Map<String,dynamic> params) {
+      return new ReplyContainer(
+        id: params['id'][0],
+        replyId: params['replyid'][0],
+        replyTo: params['replyto'][0],
+      );
     }
   )
 };

@@ -20,29 +20,10 @@ class TopicScene extends StatefulWidget{
 enum MenuType {collect, reply}
 
 class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
-  bool _isSubmiting = false;
-  FocusNode _replyFocusNode;
-  TextEditingController _replyController;
-
-  @override
-    void initState() {
-      super.initState();
-      _replyFocusNode = new FocusNode();
-      _replyController = new TextEditingController();
-    }
-
-  @override
-    void dispose() {
-      super.dispose();
-      _replyFocusNode.dispose();
-      _replyController.dispose();
-    }
-
   @override
     Widget build(BuildContext context) {
       final vm = widget.vm;
       return new Scaffold(
-        resizeToAvoidBottomPadding: false,
         appBar: new AppBar(
           brightness: Brightness.dark,
           elevation: 0.0,
@@ -97,11 +78,27 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
 
     Widget _renderDetail(BuildContext context, TopicViewModel vm) {
       final Topic topic = vm.topic;
-      final toggleCollect = vm.toggleCollect;
       return new SingleChildScrollView(
         child: new Column(
           children: <Widget>[
+            _renderAuthor(context, vm),
             new Container(
+              padding: const EdgeInsets.only(bottom:10.0, left: 10.0, right: 10.0),
+              alignment: Alignment.centerLeft,
+              child: new MarkdownBody(data: topic.content.replaceAll('//dn', 'http://dn')),
+            ),
+            _renderReplies(context, topic)
+          ],
+        ),
+      );
+    }
+
+    Widget _renderAuthor(BuildContext context, TopicViewModel vm) {
+      final toggleCollect = vm.toggleCollect;
+      final Topic topic = vm.topic;
+      return new Builder(
+        builder: (BuildContext context) {
+          return new Container(
               padding: const EdgeInsets.all(10.0),
               alignment: Alignment.centerLeft,
               child: new Row(
@@ -134,26 +131,33 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
                     icon: topic.isCollect ? new Icon(Icons.favorite, color: Colors.red)
                       : new Icon(Icons.favorite_border),
                     onPressed: () {
-                      toggleCollect(topic.id, !topic.isCollect);
+                      if (!vm.isLogined) {
+                        Scaffold.of(context).showSnackBar(new SnackBar(
+                          backgroundColor: Colors.redAccent,
+                          content: new Text('请先登录')
+                        ));
+                      } else {
+                        toggleCollect(topic.id, !topic.isCollect);
+                      }
                     },
                   ),
                   new IconButton(
                     icon: new Icon(Icons.reply),
                     onPressed: () {
-                      _showReplySheet('');
+                      if (!vm.isLogined) {
+                        Scaffold.of(context).showSnackBar(new SnackBar(
+                          backgroundColor: Colors.redAccent,
+                          content: new Text('请先登录')
+                        ));
+                      } else {
+                        Navigator.of(context).pushNamed('/reply/${topic.id}');
+                      }
                     },
                   )
                 ],
               )
-            ),
-            new Container(
-              padding: const EdgeInsets.only(bottom:10.0, left: 10.0, right: 10.0),
-              alignment: Alignment.centerLeft,
-              child: new MarkdownBody(data: topic.content.replaceAll('//dn', 'http://dn')),
-            ),
-            _renderReplies(context, topic)
-          ],
-        ),
+            );
+        },
       );
     }
 
@@ -174,7 +178,7 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
           ],
         ))
       );
-      children.addAll(replies.map((reply) => _renderReply(context, reply)).toList());
+      children.addAll(replies.map((reply) => _renderReply(context, reply, topic)).toList());
       return new Container(
         padding: const EdgeInsets.only(top: 12.0),
         child: new Column(
@@ -183,8 +187,9 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
       );
     }
 
-    Widget _renderReply(BuildContext context, Reply reply) {
+    Widget _renderReply(BuildContext context, Reply reply, Topic topic) {
       final likeReply = widget.vm.likeReply;
+      final isLogined = widget.vm.isLogined;
       ListTile title = new ListTile(
         leading: new SizedBox(
           width: 30.0,
@@ -201,40 +206,57 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
             new Text(reply.createdAt),
           ],
         ),
-        trailing: new SizedBox(
-          width: 100.0,
-          child: new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              new IconButton(
-                padding: const EdgeInsets.all(0.0),
-                onPressed: () {
-                  _showReplySheet('@${reply.authorName} ');
-                },
-                icon:new Icon(Icons.reply, size: 18.0)
-              ),
-              new GestureDetector(
-                onTap: () {
-                  likeReply(reply.id, !reply.liked);
-                },
-                child: new Container(
-                  padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, right: 6.0),
-                  child: new Row(
-                    children: <Widget>[
-                      new Icon(Icons.thumb_up, size: 15.0, 
-                        color: reply.liked ? Colors.black : Theme.of(context).iconTheme.color
-                      ),
-                      new Text('+${reply.ups}', style: new TextStyle(fontSize: 13.0, 
-                        color: reply.liked ? Colors.black : Theme.of(context).iconTheme.color)
+        trailing: new Builder(
+          builder: (BuildContext context) {
+            return new SizedBox(
+              width: 100.0,
+              child: new Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  new IconButton(
+                    padding: const EdgeInsets.all(0.0),
+                    onPressed: () {
+                      if (!isLogined) {
+                        Scaffold.of(context).showSnackBar(new SnackBar(
+                          backgroundColor: Colors.redAccent,
+                          content: new Text('请先登录')
+                        ));
+                      } else {
+                        Navigator.of(context).pushNamed('/reply/${topic.id}/${reply.id}/${reply.authorName}');
+                      }
+                    },
+                    icon:new Icon(Icons.reply, size: 18.0)
+                  ),
+                  new GestureDetector(
+                    onTap: () {
+                      if (!isLogined) {
+                        Scaffold.of(context).showSnackBar(new SnackBar(
+                          backgroundColor: Colors.redAccent,
+                          content: new Text('请先登录')
+                        ));
+                      } else {
+                        likeReply(reply.id, !reply.liked);
+                      }
+                    },
+                    child: new Container(
+                      padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, right: 6.0),
+                      child: new Row(
+                        children: <Widget>[
+                          new Icon(Icons.thumb_up, size: 15.0, 
+                            color: reply.liked ? Colors.black : Theme.of(context).iconTheme.color
+                          ),
+                          new Text('+${reply.ups}', style: new TextStyle(fontSize: 13.0, 
+                            color: reply.liked ? Colors.black : Theme.of(context).iconTheme.color)
+                          )
+                        ],
                       )
-                    ],
+                    )
                   )
-                )
+                ],
               )
-            ],
-          )
+            );
+          }
         )
-        
       );
       return new Column(
         children: <Widget>[
@@ -245,73 +267,6 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
             child: new MarkdownBody(data: reply.content.replaceAll('//dn', 'http://dn'))
           )
         ],
-      );
-    }
-
-    void _showReplySheet(String value) {
-      setState(() {
-        _replyController.text = value;
-      });
-      showModalBottomSheet(context: context, builder: (BuildContext context) => _renderReplySheet(context));
-    }
-
-    Widget _renderReplySheet(BuildContext context) {
-      final theme = Theme.of(context);
-      final createReply = widget.vm.createReply;
-      final id = widget.vm.topic.id;
-      return new Builder(
-        builder: (BuildContext context) {
-          final _focusScope = FocusScope.of(context);
-          _focusScope.reparentIfNeeded(_replyFocusNode);
-          _focusScope.requestFocus(_replyFocusNode);
-          return new SafeArea(
-            bottom: true,
-            child: new Container(
-              padding: const EdgeInsets.symmetric(vertical:8.0, horizontal: 10.0),
-              decoration: const BoxDecoration(
-                border: const Border(top: const BorderSide(color: Color(0xFFCCCCCC))),
-                color: Color(0xFFF7F7F7)
-              ),
-              child: new Row(
-                children: <Widget>[
-                  new Expanded(
-                    child: Theme(
-                      data: theme.copyWith(primaryColor: Color(0xFFDDDDDD)),
-                      child: new TextField(
-                        controller: _replyController,
-                        onChanged: (v) => _replyController.text = v,
-                        focusNode: _replyFocusNode,
-                        decoration: new InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-                          border: const OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFCCCCCC))),
-                          hintStyle: new TextStyle(color: Color(0xFF666666), fontSize: 14.0),
-                          hintText: '添加一条新回复'
-                        ),
-                      ),
-                    ),
-                  ),
-                  new IconButton(
-                    onPressed: _isSubmiting ? null : () {
-                      setState(() {
-                        _isSubmiting = true;
-                      });
-                      createReply(id, _replyController.text, (bool success, String errMsg) {
-                        setState(() {
-                          _isSubmiting = false;
-                        });
-                        Scaffold.of(context).showSnackBar(new SnackBar(
-                          content: new Text(success ? '添加回复成功' : errMsg),
-                        ));
-                      });
-                    },
-                    icon: new Icon(Icons.send, color: Color(0xFF666666)),
-                  )
-                ],
-              )
-            ),
-          );
-
-        }
       );
     }
 

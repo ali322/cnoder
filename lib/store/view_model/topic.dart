@@ -5,6 +5,7 @@ import "../root_state.dart";
 import "../model/topic.dart";
 
 class TopicViewModel{
+  final bool isLogined;
   final Topic topic;
   final bool isLoading;
   final Function toggleLoading;
@@ -14,6 +15,7 @@ class TopicViewModel{
   final Function toggleCollect;
 
   TopicViewModel({
+    @required this.isLogined,
     @required this.topic, 
     @required this.isLoading, 
     @required this.toggleLoading,
@@ -25,6 +27,7 @@ class TopicViewModel{
 
   static TopicViewModel fromStore(Store<RootState> store) {
     return new TopicViewModel(
+       isLogined: store.state.auth['isLogined'],
        topic: store.state.topic,
        isLoading: store.state.isLoading,
        toggleLoading: (bool isLoading) {

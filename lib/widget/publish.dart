@@ -24,10 +24,8 @@ class PublishState extends State<PublishScene>{
 
   @override
     Widget build(BuildContext context) {
-      final _form = _renderForm(context);
       return new Scaffold(
         backgroundColor: Color(0xFFDEDEDE),
-        resizeToAvoidBottomPadding: false,
         appBar: new AppBar(
           brightness: Brightness.dark,
           elevation: 0.0,
@@ -44,7 +42,7 @@ class PublishState extends State<PublishScene>{
               decoration: new BoxDecoration(
                 color: Colors.white
               ),
-              child: _form
+              child: _renderForm(context)
             ),
             _renderButton(context)
           ],
@@ -86,6 +84,7 @@ class PublishState extends State<PublishScene>{
                       }, (bool success, String errMsg) {
                           final _successMsg = widget.id == '' ? '创建主题成功' : '编辑主题成功';
                           Scaffold.of(context).showSnackBar(new SnackBar(
+                            backgroundColor: success ? Colors.lightGreen : Colors.redAccent,
                             content: new Text(success ? _successMsg : errMsg),
                           ));
                         setState(() {
@@ -125,23 +124,23 @@ class PublishState extends State<PublishScene>{
     }
 
     Widget _renderForm(BuildContext context) {
-      final theme = Theme.of(context);
+      final _theme = Theme.of(context);
       final topic = widget.vm.topic;
       return new Form(
         key: _formKey,
         child: new Column(
           children: <Widget>[
             Theme(
-              data: theme.copyWith(primaryColor: Color(0xFFDDDDDD)),
+              data: _theme.copyWith(primaryColor: Color(0xFFDDDDDD)),
               child: TextFormField(
                 initialValue: topic.title,
                 // autovalidate: true,
-                validator: (value) {
+                validator: (String value) {
                   if (value.isEmpty) {
                     return '标题不能为空';
                   }
                 },
-                onSaved: (value) {
+                onSaved: (String value) {
                   setState(() {
                     _title = value;
                   });
