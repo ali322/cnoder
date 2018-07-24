@@ -62,6 +62,7 @@ class LoginState extends State<LoginScene>{
       }
       if (_errMsg != "") {
         Scaffold.of(context).showSnackBar(new SnackBar(
+          backgroundColor: Colors.redAccent,
           content: new Text(_errMsg),
         ));
       }

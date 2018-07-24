@@ -103,13 +103,16 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
               alignment: Alignment.centerLeft,
               child: new Row(
                 children: <Widget>[
-                  new SizedBox(
+                  new Container(
                     width: 30.0,
                     height: 30.0,
-                    child: new CachedNetworkImage(
-                      imageUrl: topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar,
-                      placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
-                      errorWidget: new Icon(Icons.error),
+                    child: new ClipRRect(
+                      borderRadius: new BorderRadius.circular(5.0),
+                      child: new CachedNetworkImage(
+                        imageUrl: topic.authorAvatar.startsWith('//') ? 'http:${topic.authorAvatar}' : topic.authorAvatar,
+                        placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
+                        errorWidget: new Icon(Icons.error),
+                      )
                     )
                   ),
                   new Expanded(
@@ -191,13 +194,16 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
       final likeReply = widget.vm.likeReply;
       final isLogined = widget.vm.isLogined;
       ListTile title = new ListTile(
-        leading: new SizedBox(
+        leading: new Container(
           width: 30.0,
           height: 30.0,
-          child: new CachedNetworkImage(
-            imageUrl: reply.authorAvatar.startsWith('//') ? 'http:${reply.authorAvatar}' : reply.authorAvatar,
-            placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
-            errorWidget: new Icon(Icons.error),
+          child: new ClipRRect(
+            borderRadius: new BorderRadius.circular(5.0),
+            child: new CachedNetworkImage(
+              imageUrl: reply.authorAvatar.startsWith('//') ? 'http:${reply.authorAvatar}' : reply.authorAvatar,
+              placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
+              errorWidget: new Icon(Icons.error),
+            )
           )
         ),
         title: new Text(reply.authorName),
