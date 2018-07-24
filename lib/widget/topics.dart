@@ -22,7 +22,6 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
   TabController _tabController;
   List<Tab> _tabs;
   VoidCallback _onTabChange;
-  Map<String, double> _scrollOffsets = {};
 
   @override
   void initState() {
@@ -32,7 +31,6 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
 
     _tabs = <Tab>[];
     topicsOfCategory.forEach((k, v) {
-      _scrollOffsets[k] = 0.0;
       _tabs.add(new Tab(
         text: v["label"]
       ));
@@ -67,26 +65,6 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         strokeWidth: 2.0
       )
     );
-  }
-
-  List<Widget> _renderTabView(BuildContext context, Map topicsOfCategory, Function onRefresh) {
-    final _tabViews = <Widget>[];
-    topicsOfCategory.forEach((k, category) {
-      bool isFetched = topicsOfCategory[k]["isFetched"];
-      _tabViews.add(!isFetched ? _renderLoading(context) : new SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: true,
-          onRefresh: onRefresh(k),
-          controller: _refreshController,
-          child: new ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: topicsOfCategory[k]["list"].length,
-            itemBuilder: (BuildContext context, int i) => _renderRow(context, topicsOfCategory[k]["list"][i]),
-          ),
-        ));
-    });
-    return _tabViews;
   }
 
   Widget _renderRow(BuildContext context, Topic topic) {
@@ -158,6 +136,23 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         };
       };
 
+      List<Widget> _tabViews = [];
+      topicsOfCategory.forEach((k, category) {
+        bool isFetched = topicsOfCategory[k]["isFetched"];
+        _tabViews.add(!isFetched ? _renderLoading(context) : new SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            onRefresh: _onRefresh(k),
+            controller: _refreshController,
+            child: new ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: topicsOfCategory[k]["list"].length,
+              itemBuilder: (BuildContext context, int i) => _renderRow(context, topicsOfCategory[k]["list"][i]),
+            ),
+          ));
+      });
+
       return new Scaffold(
         appBar: new AppBar(
           brightness: Brightness.dark,
@@ -175,7 +170,7 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         ),
         body: new TabBarView(
           controller: _tabController,
-          children: _renderTabView(context, topicsOfCategory, _onRefresh),
+          children: _tabViews,
         )
       );
     }
