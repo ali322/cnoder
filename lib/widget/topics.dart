@@ -18,19 +18,21 @@ class TopicsScene extends StatefulWidget{
 }
 
 class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
-  RefreshController _controller;
+  RefreshController _refreshController;
   TabController _tabController;
   List<Tab> _tabs;
   VoidCallback _onTabChange;
+  Map<String, double> _scrollOffsets = {};
 
   @override
   void initState() {
     super.initState();
     final topicsOfCategory = widget.vm.topicsOfCategory;
-    _controller = new RefreshController();
+    _refreshController = new RefreshController();
 
     _tabs = <Tab>[];
     topicsOfCategory.forEach((k, v) {
+      _scrollOffsets[k] = 0.0;
       _tabs.add(new Tab(
         text: v["label"]
       ));
@@ -67,22 +69,22 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
     );
   }
 
-  List<Widget> _renderTabView(BuildContext context, Map topicsOfCategory, RefreshController refreshController, Function onRefresh) {
+  List<Widget> _renderTabView(BuildContext context, Map topicsOfCategory, Function onRefresh) {
     final _tabViews = <Widget>[];
     topicsOfCategory.forEach((k, category) {
       bool isFetched = topicsOfCategory[k]["isFetched"];
       _tabViews.add(!isFetched ? _renderLoading(context) : new SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        onRefresh: onRefresh(k),
-        controller: refreshController,
-        child: new ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: topicsOfCategory[k]["list"].length,
-          itemBuilder: (BuildContext context, int i) => _renderRow(context, topicsOfCategory[k]["list"][i]),
-        ),
-      ));
+          enablePullDown: true,
+          enablePullUp: true,
+          onRefresh: onRefresh(k),
+          controller: _refreshController,
+          child: new ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: topicsOfCategory[k]["list"].length,
+            itemBuilder: (BuildContext context, int i) => _renderRow(context, topicsOfCategory[k]["list"][i]),
+          ),
+        ));
     });
     return _tabViews;
   }
@@ -135,21 +137,21 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         return (bool up) {
           if (!up) {
             if (isLoading) {
-              _controller.sendBack(false, RefreshStatus.idle);
+              _refreshController.sendBack(false, RefreshStatus.idle);
               return;
             }
             fetchTopics(
               currentPage: topicsOfCategory[category]["currentPage"] + 1,
               category: category,
               afterFetched: () {
-                _controller.sendBack(false, RefreshStatus.idle);
+                _refreshController.sendBack(false, RefreshStatus.idle);
               }
             );
           } else {
             resetTopics(
               category: category,
               afterFetched: () {
-                _controller.sendBack(true, RefreshStatus.completed);
+                _refreshController.sendBack(true, RefreshStatus.completed);
               }
             );
           }
@@ -173,7 +175,7 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
         ),
         body: new TabBarView(
           controller: _tabController,
-          children: _renderTabView(context, topicsOfCategory, _controller, _onRefresh),
+          children: _renderTabView(context, topicsOfCategory, _onRefresh),
         )
       );
     }

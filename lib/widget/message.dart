@@ -97,13 +97,16 @@ class MessageState extends State<MessageScene> with TickerProviderStateMixin{
 
     Widget _renderRow(BuildContext context, Message message) {
       ListTile title = new ListTile(
-        leading: new SizedBox(
+        leading: new Container(
           width: 30.0,
           height: 30.0,
-          child: new CachedNetworkImage(
-            imageUrl: message.authorAvatar.startsWith('//') ? 'http:${message.authorAvatar}' : message.authorAvatar,
-            placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
-            errorWidget: new Icon(Icons.error),
+          child: new ClipRRect(
+            borderRadius: new BorderRadius.circular(5.0),
+            child: new CachedNetworkImage(
+              imageUrl: message.authorAvatar.startsWith('//') ? 'http:${message.authorAvatar}' : message.authorAvatar,
+              placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
+              errorWidget: new Icon(Icons.error),
+            )
           )
         ),
         title: new Text(message.authorName),
