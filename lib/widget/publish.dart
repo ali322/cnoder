@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
+import "dart:async";
 import "../common/helper.dart";
 import "../store/view_model/publish.dart";
 
@@ -21,6 +22,15 @@ class PublishState extends State<PublishScene>{
   String _title = '';
   String _content = '';
   bool _isSubmiting = false;
+  Timer _timer;
+
+  @override
+    void dispose() {
+      super.dispose();
+      if (_timer != null) {
+        _timer.cancel();
+      }
+    }
 
   @override
     Widget build(BuildContext context) {
@@ -87,9 +97,12 @@ class PublishState extends State<PublishScene>{
                             backgroundColor: success ? Colors.lightGreen : Colors.redAccent,
                             content: new Text(success ? _successMsg : errMsg),
                           ));
-                        setState(() {
-                          _isSubmiting = false;
-                        });
+                          setState(() {
+                            _isSubmiting = false;
+                          });
+                          _timer = new Timer(const Duration(milliseconds: 300), () {
+                            Navigator.of(context).pop();
+                          });
                       });
                     }
                   },

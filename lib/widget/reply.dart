@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "dart:async";
 
 class ReplyScene extends StatefulWidget{
   final Function createReply;
@@ -18,6 +19,7 @@ class ReplyState extends State<ReplyScene>{
   final _formKey = GlobalKey<FormState>();
   String _content = '';
   bool _isSubmiting = false;
+  Timer _timer;
 
   @override
     void initState() {
@@ -26,6 +28,14 @@ class ReplyState extends State<ReplyScene>{
         _content = '@${widget.replyTo} ';
       }
     }
+
+    @override
+      void dispose() {
+        super.dispose();
+        if (_timer != null) {
+          _timer.cancel();
+        }
+      }
 
   @override
     Widget build(BuildContext context) {
@@ -108,6 +118,9 @@ class ReplyState extends State<ReplyScene>{
                       backgroundColor: success ? Colors.lightGreen : Colors.redAccent,
                       content: new Text(success ? '添加回复成功' : errMsg),
                     ));
+                    _timer = new Timer(const Duration(milliseconds: 3000),() {
+                      Navigator.of(context).pop();
+                    });
                   });
                 }
               },

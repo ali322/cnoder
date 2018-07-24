@@ -112,6 +112,7 @@ Stream<dynamic> createReplyEpic(Stream<dynamic> actions, EpicStore<RootState> st
           });
           Map<String, dynamic> result = json.decode(ret.body);
           action.afterCreate(result["success"], result["error_msg"]);
+          yield new RequestTopic(action.id);
           yield new FinishCreateReply(result["reply_id"]);
         } catch(err) {
           print(err);
