@@ -133,7 +133,7 @@ Stream<dynamic> toggleCollectEpic(Stream<dynamic> actions, EpicStore<RootState> 
             "accesstoken": store.state.auth["accessToken"],
             "topic_id": action.id,
           });
-          Map<String, dynamic> result = json.decode(ret.body);
+          // Map<String, dynamic> result = json.decode(ret.body);
           yield new FinishToggleCollect(action.status);
         } catch(err) {
           print(err);
