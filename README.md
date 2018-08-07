@@ -14,7 +14,7 @@ Yet another [cnodejs.org](http://cnodejs.org) Flutter App
 make sure finish [install Flutter](https://flutter.io/get-started/install/) successful
 
 1. clone this repo
-`git clone https://github.com/ali322/CNodeRN`
+`git clone https://github.com/ali322/cnoder`
 2. install all the packages
 `flutter packages get`
 3. run the app in simulator on your own
