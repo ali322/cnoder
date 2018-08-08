@@ -5,6 +5,7 @@ import "package:pull_to_refresh/pull_to_refresh.dart";
 import "package:cached_network_image/cached_network_image.dart";
 import "../store/model/topic.dart";
 import "../store/view_model/topics.dart";
+import "./persist_tabview.dart";
 
 class TopicsScene extends StatefulWidget{
   final TopicsViewModel vm;
@@ -139,7 +140,8 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
       List<Widget> _tabViews = [];
       topicsOfCategory.forEach((k, category) {
         bool isFetched = topicsOfCategory[k]["isFetched"];
-        _tabViews.add(!isFetched ? _renderLoading(context) : new SmartRefresher(
+        _tabViews.add(!isFetched ? _renderLoading(context) : new PersistTabview(
+          child: SmartRefresher(
             enablePullDown: true,
             enablePullUp: true,
             onRefresh: _onRefresh(k),
@@ -150,7 +152,8 @@ class TopicsState extends State<TopicsScene> with TickerProviderStateMixin{
               itemCount: topicsOfCategory[k]["list"].length,
               itemBuilder: (BuildContext context, int i) => _renderRow(context, topicsOfCategory[k]["list"][i]),
             ),
-          ));
+          ))
+        );
       });
 
       return new Scaffold(
