@@ -20,9 +20,16 @@ class IndexScene extends StatefulWidget{
 }
 
 class IndexState extends State<IndexScene> {
-  List _renderScenes(bool isLogined) {
+  PageController _pageController;
+  List _scenes;
+
+  @override
+  initState() {
+    super.initState();
+    _pageController = new PageController(initialPage: widget.vm.tabIndex);
+
     final bool isLogined = widget.vm.auth["isLogined"];
-    return <Widget>[
+    _scenes = [
       new TopicsContainer(vm: widget.vm),
       isLogined ? new CollectContainer(vm: widget.vm) : new LoginScene(),
       isLogined ? new MessageContainer(vm: widget.vm,) : new LoginScene(),
@@ -33,11 +40,10 @@ class IndexState extends State<IndexScene> {
   @override
     Widget build(BuildContext context) {
       final bool isLogined = widget.vm.auth["isLogined"];
-      final List scenes = _renderScenes(isLogined);
       final int tabIndex = widget.vm.tabIndex;
       final Function setTab = widget.vm.selectTab;
 
-      final currentScene = scenes[0];
+      final currentScene = _scenes[0];
       if (currentScene is InitializeContainer) {
         if (currentScene.getInitialized() == false) {
           currentScene.initialize();
@@ -51,16 +57,7 @@ class IndexState extends State<IndexScene> {
           backgroundColor: const Color(0xFFF7F7F7),
           currentIndex: tabIndex,
           onTap: (int i) {
-            final currentScene = scenes[i];
-            if (isLogined) {
-              if (currentScene is InitializeContainer) {
-                if (currentScene.getInitialized() == false) {
-                  currentScene.initialize();
-                  currentScene.setInitialized();
-                }
-              }
-            }
-            setTab(i);
+            _pageController.jumpToPage(i);
           },
           items: <BottomNavigationBarItem>[
             new BottomNavigationBarItem(
@@ -81,9 +78,23 @@ class IndexState extends State<IndexScene> {
             )
           ],
         ),
-        body: new IndexedStack(
-          children: scenes,
-          index: tabIndex,
+        body: new PageView(
+          children: _scenes,
+          controller: _pageController,
+          onPageChanged: (int i) {
+            if (i != tabIndex) {
+              final currentScene = _scenes[i];
+              if (isLogined) {
+                if (currentScene is InitializeContainer) {
+                  if (currentScene.getInitialized() == false) {
+                    currentScene.initialize();
+                    currentScene.setInitialized();
+                  }
+                }
+              }
+              setTab(i);
+            }
+          },
         )
         
       );
