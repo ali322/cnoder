@@ -29,7 +29,7 @@ class TopicState extends State<TopicScene> with SingleTickerProviderStateMixin{
           elevation: 0.0,
           title: _renderTitle(context, vm),
           leading: new IconButton(icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20.0), onPressed: () {
-            Navigator.maybePop(context);
+            Navigator.of(context).maybePop();
           }),
           actions: <Widget>[
             new IconButton(
