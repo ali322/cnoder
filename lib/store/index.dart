@@ -25,23 +25,28 @@ final epic = combineEpics([
 ]);
 
 final persistor = Persistor<RootState>(
-  storage: FlutterStorage('cnoder'),
-  decoder: RootState.fromJson,
-  debug: true
+  storage: FlutterStorage(key: 'cnoder'),
+  serializer: JsonSerializer<RootState>(RootState.fromJson),
+  debug: true,
+  shouldSave: (Store<RootState> store, dynamic action) {
+    if (action is FinishLogin || action is Logout) { 
+      return true;
+    }
+    return false;
+  }
 );
 
-void persistMiddleware(Store store, dynamic action, NextDispatcher next) {
-  next(action);
-  if (action is FinishLogin || action is Logout) {
-    try {
-      persistor.save(store);
-    } catch (_) {}
-  }
+Future<Store<RootState>> loadStore() async{
+  final initialState = await persistor.load();
+
+  final store = new Store<RootState>(rootReducer,
+    initialState: initialState ?? new RootState(), 
+    middleware: [
+      new LoggingMiddleware.printer(), 
+      new EpicMiddleware(epic),
+      persistor.createMiddleware()
+    ]
+  );
+  return store;
 }
 
-final store = new Store<RootState>(rootReducer,
-  initialState: new RootState(), middleware: [
-    new LoggingMiddleware.printer(), 
-    new EpicMiddleware(epic),
-    persistMiddleware
-]);

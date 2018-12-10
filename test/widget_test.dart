@@ -13,6 +13,7 @@ import "package:cnoder/store/index.dart";
 
 void main() {
   testWidgets('index scene test', (WidgetTester tester) async {
+    final store = await loadStore();
     // Build our app and trigger a frame.
     await tester.pumpWidget(new MaterialApp(home: TopicsScene(vm: TopicsViewModel.fromStore(store))));
 

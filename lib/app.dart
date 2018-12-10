@@ -2,14 +2,14 @@ import "package:flutter/material.dart";
 import "package:fluro/fluro.dart";
 import "package:flutter_redux/flutter_redux.dart";
 import "./route/handler.dart";
-import "./store/index.dart";
+import "package:redux/redux.dart";
 import "./store/root_state.dart";
 
 class App extends StatelessWidget {
+  final Store<RootState> store;
   final Router router = new Router();
 
-  App() {
-    persistor.load(store);
+  App({Key key, this.store}):super(key: key) {
     router.notFoundHandler = notFoundHandler;
     handlers.forEach((String path,Handler handler) {
       router.define(path, handler: handler);
