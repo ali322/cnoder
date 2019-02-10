@@ -15,7 +15,7 @@ dependencies:
   pull_to_refresh: ^1.1.4
   barcode_scan: ^0.0.3
   share: ^0.5.2
-  cached_network_image: ^0.4.1+1
+  cached_network_image: ^0.5.1
   flutter:
     sdk: flutter
 
