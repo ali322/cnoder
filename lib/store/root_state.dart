@@ -56,7 +56,9 @@ class RootState {
 
   static RootState fromJson(dynamic json) {
     return RootState(
-      auth: json['auth']
+      auth: json == null ? {
+        "isLogined": false
+      } : json['auth']
     );
   }
 

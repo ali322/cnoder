@@ -29,7 +29,7 @@ class IndexState extends State<IndexScene> {
     _pageController = new PageController(initialPage: widget.vm.tabIndex);
 
     final bool isLogined = widget.vm.auth["isLogined"];
-    _scenes = [
+    _scenes = <Widget>[
       new TopicsContainer(vm: widget.vm),
       isLogined ? new CollectContainer(vm: widget.vm) : new LoginScene(),
       isLogined ? new MessageContainer(vm: widget.vm,) : new LoginScene(),

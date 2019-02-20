@@ -9,13 +9,22 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cnoder/widget/topics.dart';
 import 'package:cnoder/store/view_model/topics.dart';
-import "package:cnoder/store/index.dart";
+import 'package:cnoder/store/root_state.dart';
 
 void main() {
   testWidgets('index scene test', (WidgetTester tester) async {
-    final store = await loadStore();
+    final binding = tester.binding as AutomatedTestWidgetsFlutterBinding;
+    binding.addTime(const Duration(seconds: 13));
+
+    final rootState = new RootState();
+    final vm = new TopicsViewModel(
+      topicsOfCategory: rootState.topicsOfCategory,
+      isLoading: true,
+      resetTopics: null,
+      fetchTopics: null
+    );
     // Build our app and trigger a frame.
-    await tester.pumpWidget(new MaterialApp(home: TopicsScene(vm: TopicsViewModel.fromStore(store))));
+    await tester.pumpWidget(new MaterialApp(home: TopicsScene(vm: vm)));
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
