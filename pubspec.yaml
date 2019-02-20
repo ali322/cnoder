@@ -4,11 +4,11 @@ description: A new Flutter project.
 dependencies:
   redux: "^3.0.0"
   flutter_redux: "^0.5.1"
-  redux_epics: "^0.9.0"
+  redux_epics: "^0.10.4"
   redux_logging: "^0.3.0"
   redux_persist: "^0.8.0"
   redux_persist_flutter: "^0.8.0"
-  rxdart: "^0.16.5"
+  rxdart: "^0.20.0"
   fluro: "^1.3.1"
   http: "^0.11.3+16"
   flutter_markdown: "^0.2.0"
