@@ -104,8 +104,8 @@ class MessageState extends State<MessageScene> with TickerProviderStateMixin{
             borderRadius: new BorderRadius.circular(5.0),
             child: new CachedNetworkImage(
               imageUrl: message.authorAvatar.startsWith('//') ? 'http:${message.authorAvatar}' : message.authorAvatar,
-              placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
-              errorWidget: new Icon(Icons.error),
+              placeholder: (BuildContext context,String url) => new Image.asset('asset/image/cnoder_avatar.png'),
+              errorWidget: (BuildContext context, String url, Object error) => new Icon(Icons.error),
             )
           )
         ),

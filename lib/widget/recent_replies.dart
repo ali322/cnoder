@@ -35,8 +35,8 @@ class RecentRepliesScene extends StatelessWidget{
             borderRadius: new BorderRadius.circular(5.0),
             child: new CachedNetworkImage(
               imageUrl: item["authorAvatar"].startsWith('//') ? 'http:${item["authorAvatar"]}' : item["authorAvatar"],
-              placeholder: new Image.asset('asset/image/cnoder_avatar.png'),
-              errorWidget: new Icon(Icons.error),
+              placeholder: (BuildContext context,String url) => new Image.asset('asset/image/cnoder_avatar.png'),
+              errorWidget: (BuildContext context, String url, Object error) => new Icon(Icons.error),
             )
           )
         ),

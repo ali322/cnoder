@@ -1,5 +1,5 @@
 name: cnoder
-description: A new Flutter project.
+description: A cnode.org app write in Flutter.
 
 dependencies:
   redux: "^3.0.0"
@@ -15,7 +15,7 @@ dependencies:
   pull_to_refresh: ^1.2.0
   barcode_scan: ^0.0.3
   share: ^0.5.2
-  cached_network_image: ^0.5.1
+  cached_network_image: ^1.1.1
   flutter:
     sdk: flutter
 
